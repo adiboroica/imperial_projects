@@ -1,0 +1,64 @@
+# base image
+image: node:16
+
+cache:
+  paths:
+    - .yarn
+
+# add a stage for linting
+stages:
+  - install
+  - test
+  - build
+
+install-dependencies:
+  stage: install
+  script:
+    - cd frontend
+    - yarn install --frozen-lockfile
+  cache:
+    key: 
+      files:
+        - ./frontend/yarn.lock
+    paths:
+      - ./frontend/node_modules
+    policy: pull-push
+
+test:
+  stage: test
+  script:
+    - cd frontend 
+    - yarn install --frozen-lockfile
+    - yarn test
+    - echo "All tests pass!"
+  cache:
+    key: 
+      files:
+        - ./frontend/yarn.lock
+    paths:
+      - ./frontend/node_modules
+    policy: pull
+  # Uncomment once frontend_intial_setup is merged into master
+  # only:
+  #   - master
+
+# add a stage for deployment
+build:
+  stage: build
+  script:
+    - cd frontend
+    - yarn install --frozen-lockfile
+    - yarn build
+    - echo "Project build successful!"
+  cache:
+    key:
+      files:
+        - ./frontend/yarn.lock
+    paths:
+      - ./frontend/node_modules
+    policy: pull
+  artifacts:
+    paths:
+      - ./frontend/build
+  # only:
+  #   - master

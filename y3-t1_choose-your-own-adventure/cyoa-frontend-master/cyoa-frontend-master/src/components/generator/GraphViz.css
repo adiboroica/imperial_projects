@@ -1,0 +1,15 @@
+.layoutflow {
+  border: 2px solid var(--my-light);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  margin-bottom: var(--grid-size);
+}
+
+.react-flow .react-flow__node:hover .react-flow__handle {
+    width: 15px;
+    height: 15px;
+}
+
+.react-flow .react-flow__handle {
+  background-color: var(--oc-blue-7);
+}
