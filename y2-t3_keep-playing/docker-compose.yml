@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: keep_playing
+      POSTGRES_USER: keepplaying
+      POSTGRES_PASSWORD: keepplaying
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keepplaying"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEVELOPMENT: "1"
+      POSTGRES_DB_NAME: keep_playing
+      POSTGRES_USER: keepplaying
+      POSTGRES_PASSWORD: keepplaying
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      USE_S3: "FALSE"
+      EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+    volumes:
+      - ./backend/media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
