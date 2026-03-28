@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:14
@@ -16,18 +14,19 @@ services:
       retries: 5
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
     environment:
-      DJANGO_DEVELOPMENT: "1"
       POSTGRES_DB_NAME: keep_playing
       POSTGRES_USER: keepplaying
       POSTGRES_PASSWORD: keepplaying
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
-      USE_S3: "FALSE"
-      EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+      USE_S3: "False"
+      EMAIL_NOTIFICATIONS_ENABLED: "False"
       ALLOWED_HOSTS: localhost,127.0.0.1,backend
     volumes:
       - ./backend/media:/app/media
@@ -41,6 +40,29 @@ services:
       - "80:80"
     depends_on:
       - backend
+
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    environment:
+      POSTGRES_DB_NAME: keep_playing
+      POSTGRES_USER: keepplaying
+      POSTGRES_PASSWORD: keepplaying
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["bash", "-c", "python manage.py makemigrations app --noinput && pytest --tb=short -q"]
+    profiles: ["test"]
+
+  frontend-test:
+    build:
+      context: ./frontend
+      target: builder
+    command: ["flutter", "test", "--reporter=compact"]
+    profiles: ["test"]
 
 volumes:
   pgdata:

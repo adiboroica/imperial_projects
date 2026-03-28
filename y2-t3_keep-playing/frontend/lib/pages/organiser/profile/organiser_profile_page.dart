@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
+import '../organiser_login_page.dart';
 import 'blocked_page.dart';
 import 'defaults_page.dart';
 import 'favourites_page.dart';
@@ -82,6 +83,18 @@ class OrganiserProfilePage extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: AppTheme.cancelColor),
+            title: const Text('Logout'),
+            onTap: () {
+              context.read<AuthCubit>().logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const OrganiserLoginPage()),
+                (route) => false,
+              );
+            },
           ),
         ],
       ),

@@ -1,0 +1,10 @@
+.action {
+  color: var(--mantine-color-black);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.text_input {
+  width: 100%;
+}

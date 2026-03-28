@@ -143,20 +143,12 @@ class _DefaultsPageState extends State<DefaultsPage> {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = await apiOrganiser.updateDefaults(defaults: defaults);
+      await apiOrganiser.updateDefaults(defaults: defaults);
 
       if (!mounted) return;
       setState(() => _isSaving = false);
-
-      if (response.statusCode == 200) {
-        await context.read<OrganiserCubit>().reload();
-        if (mounted) Navigator.of(context).pop();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      await context.read<OrganiserCubit>().reload();
+      if (mounted) Navigator.of(context).pop();
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSaving = false);

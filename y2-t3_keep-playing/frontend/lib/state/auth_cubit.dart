@@ -13,17 +13,30 @@ class AuthCubit extends Cubit<AuthState> {
   final ApiUsers apiUsers;
   final AuthStorage _storage;
 
+  late final Future<void> sessionRestored;
+
   AuthCubit({
     required this.apiClient,
     required this.apiUsers,
     AuthStorage? storage,
   })  : _storage = storage ?? AuthStorage(),
-        super(const AuthInitial());
+        super(const AuthInitial()) {
+    sessionRestored = restoreSession();
+  }
 
   User? get currentUser => switch (state) {
         AuthAuthenticated(user: final u) => u,
         _ => null,
       };
+
+  Future<void> restoreSession() async {
+    final token = await _storage.getToken();
+    final user = await _storage.getUser();
+    if (token != null && user != null) {
+      apiClient.setToken(token);
+      emit(AuthAuthenticated(user: user, token: token));
+    }
+  }
 
   Future<void> login({required UserLogin userLogin}) async {
     emit(const AuthLoading());

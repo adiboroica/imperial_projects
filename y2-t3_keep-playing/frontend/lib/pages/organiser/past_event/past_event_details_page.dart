@@ -214,21 +214,13 @@ class _CoachActionButtons extends StatelessWidget {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = isBlocked
+      isBlocked
           ? await apiOrganiser.unblockCoach(coach)
           : await apiOrganiser.blockCoach(coach);
 
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
-
-      if (response.statusCode == 200) {
-        onOrganiserChanged();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      onOrganiserChanged();
     } catch (_) {
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
@@ -253,21 +245,13 @@ class _CoachActionButtons extends StatelessWidget {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = isFav
+      isFav
           ? await apiOrganiser.removeFavourite(coach)
           : await apiOrganiser.addFavourite(coach);
 
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
-
-      if (response.statusCode == 200) {
-        onOrganiserChanged();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      onOrganiserChanged();
     } catch (_) {
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading

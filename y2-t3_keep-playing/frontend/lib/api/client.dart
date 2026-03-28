@@ -29,6 +29,7 @@ class ApiClient {
       headers: _headers,
       body: body != null ? jsonEncode(body) : null,
     );
+    _checkResponse(response);
     return response;
   }
 
@@ -43,11 +44,13 @@ class ApiClient {
       headers: _headers,
       body: body != null ? jsonEncode(body) : null,
     );
+    _checkResponse(response);
     return response;
   }
 
   Future<http.Response> delete(String path) async {
     final response = await _client.delete(Uri.parse(path), headers: _headers);
+    _checkResponse(response);
     return response;
   }
 

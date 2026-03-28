@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/event.dart';
+import '../utils.dart';
 import 'app_theme.dart';
 
 class EventCard extends StatelessWidget {
@@ -16,9 +17,6 @@ class EventCard extends StatelessWidget {
     required this.rightButton,
   });
 
-  String _formatTime(TimeOfDay time) =>
-      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -31,8 +29,8 @@ class EventCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(DateFormat('MMMM dd').format(event.date)),
-                Text(_formatTime(event.startTime)),
-                Text(_formatTime(event.endTime)),
+                Text(formatTime(event.startTime)),
+                Text(formatTime(event.endTime)),
               ],
             ),
             title: Text(event.name, textAlign: TextAlign.left),

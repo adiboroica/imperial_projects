@@ -1,6 +1,6 @@
 import { Progress } from "@mantine/core";
-import { showNotification, updateNotification } from "@mantine/notifications";
-import { IconAlertTriangle, IconCheck } from '@tabler/icons';
+import { notifications } from "@mantine/notifications";
+import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { LoadingType } from "../../../utils/graph/types";
 
 
@@ -22,13 +22,13 @@ export const displayLoadingNotification = (loadingType: LoadingType | null) => {
   ]);
   const message = typeMessage.get(loadingType);
 
-  showNotification({
+  notifications.show({
     id: 'load-data',
     loading: true,
     title: message,
     message: 'Please wait.',
     autoClose: false,
-    disallowClose: true,
+    withCloseButton: false,
   });
 }
 
@@ -51,7 +51,7 @@ export const displayLoadedNotification = (loadingType: LoadingType | null) => {
   ]);
   const message = typeMessage.get(loadingType);
 
-  updateNotification({
+  notifications.update({
     id: 'load-data',
     color: 'teal',
     title: message,
@@ -63,7 +63,7 @@ export const displayLoadedNotification = (loadingType: LoadingType | null) => {
 
 
 export const displayErrorUpdate = (title: string, message: string='Try again...') => {
-  updateNotification({
+  notifications.update({
     id: 'load-data',
     color: 'red',
     title,
@@ -79,22 +79,22 @@ export type LoadingUpdate = {
   numNodesGenerated: number,
 }
 export const displayGenerateManyUpdate = (loadingUpdate: LoadingUpdate) => {
-  updateNotification({
+  notifications.update({
     id: 'load-data',
     loading: true,
     title: "Generating many paragraphs and actions.",
     message: <Progress value={loadingUpdate.percentage} />,
     autoClose: false,
-    disallowClose: true,
+    withCloseButton: false,
   });
 };
 export const displayGenerateManyLoadingNotification = () => {
-  showNotification({
+  notifications.show({
     id: 'load-data',
     loading: true,
     title: "Generating many paragraphs and actions.",
     message: <Progress value={0} />,
     autoClose: false,
-    disallowClose: true,
+    withCloseButton: false,
   });
 };

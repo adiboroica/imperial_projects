@@ -1,0 +1,15 @@
+.slider {
+  padding-bottom: 2em;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.textarea {
+  padding-bottom: 1em;
+}
+
+.text {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

@@ -1,0 +1,13 @@
+.footer {
+  background-color: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+  border-top: 1px solid var(--mantine-color-gray-2);
+}
+
+.footerInner {
+  padding: var(--mantine-spacing-md) var(--mantine-spacing-md);
+}
+
+.text {
+  color: var(--mantine-color-black);
+  font-weight: 500;
+}

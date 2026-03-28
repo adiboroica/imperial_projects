@@ -1,0 +1,16 @@
+.box {
+  width: 100vw;
+  height: 92vh;
+  align-items: center;
+}
+
+.stack {
+  background-color: var(--mantine-color-white);
+  height: 380px;
+  width: 320px;
+  border-radius: 6px;
+  box-shadow: var(--mantine-shadow-md);
+  padding: 20px;
+  margin: auto;
+  align-items: center;
+}

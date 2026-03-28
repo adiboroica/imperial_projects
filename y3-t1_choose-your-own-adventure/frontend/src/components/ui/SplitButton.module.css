@@ -1,0 +1,17 @@
+.buttonStack {
+  text-align: center;
+}
+
+.splitButton {
+  width: 100%;
+  text-align: center;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0.5px solid;
+}
+
+.splitMenu {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0.5px solid;
+}

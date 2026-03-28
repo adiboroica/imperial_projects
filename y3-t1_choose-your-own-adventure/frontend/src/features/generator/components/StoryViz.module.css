@@ -1,0 +1,18 @@
+.container {
+  width: 100%;
+  padding: 0;
+}
+
+.group {
+  align-items: stretch;
+}
+
+.optionsContainer {
+  width: 240px;
+  height: 400px;
+  border: 2px solid var(--my-light);
+  background: var(--my-light);
+  border-radius: 8px;
+  margin-bottom: var(--grid-size);
+  padding: var(--grid-size);
+}

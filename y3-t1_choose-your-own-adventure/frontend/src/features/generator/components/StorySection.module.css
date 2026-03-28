@@ -1,0 +1,22 @@
+.sectionArea {
+  background-color: var(--mantine-color-white);
+  border-radius: 5px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.stack {
+  padding: 28px;
+}
+
+.paragraphTitle {
+  color: var(--mantine-color-black);
+}
+
+.actionsList {
+  margin-left: 32px;
+}
+
+.actionsListItem {
+  display: list-item;
+}

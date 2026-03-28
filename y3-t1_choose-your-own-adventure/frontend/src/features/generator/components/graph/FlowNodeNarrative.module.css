@@ -1,0 +1,15 @@
+.nodeBox {
+  background-color: var(--mantine-color-gray-0);
+  border: 2px solid var(--mantine-color-gray-0);
+  text-align: center;
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-sm);
+  max-width: 172px;
+  max-height: 64px;
+  font-size: 10px;
+  overflow: hidden;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

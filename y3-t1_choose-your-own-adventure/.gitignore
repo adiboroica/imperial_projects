@@ -1,10 +1,6 @@
-.env
-node_modules/
-__pycache__/
-*.pyc
-venv/
-.idea/
+# Local Development
+.claude/
 .vscode/
-.DS_Store
-dist/
-build/
+
+# Local Environment Variables
+.env

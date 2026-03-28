@@ -1,0 +1,26 @@
+.titleBox {
+  background-color: var(--mantine-color-gray-0);
+  padding: var(--mantine-spacing-md);
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: var(--mantine-radius-sm);
+  width: 100%;
+}
+
+.title {
+  width: 100%;
+  align-items: left;
+}
+
+.leftBox {
+  width: 72%;
+}
+
+.rightBox {
+  width: 24%;
+}
+
+.titleOverflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

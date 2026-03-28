@@ -8,6 +8,7 @@ import 'package:keep_playing_frontend/api/users.dart';
 import 'package:keep_playing_frontend/models/event.dart';
 import 'package:keep_playing_frontend/models/user.dart';
 import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/utils.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/exit_guard.dart';
@@ -169,12 +170,12 @@ class _ManageEventPageState extends State<ManageEventPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.access_time),
-                        title: Text('Start Time: ${_formatTime(_startTime)}'),
+                        title: Text('Start Time: ${formatTime(_startTime)}'),
                         onTap: () => _pickTime(isStart: true),
                       ),
                       ListTile(
                         leading: const Icon(Icons.access_time),
-                        title: Text('End Time: ${_formatTime(_endTime)}'),
+                        title: Text('End Time: ${formatTime(_endTime)}'),
                         onTap: () => _pickTime(isStart: false),
                       ),
                       SwitchListTile(
@@ -255,9 +256,6 @@ class _ManageEventPageState extends State<ManageEventPage> {
       ),
     );
   }
-
-  String _formatTime(TimeOfDay time) =>
-      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -346,22 +344,14 @@ class _ManageEventPageState extends State<ManageEventPage> {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = await apiOrganiser.updateEvent(
+      await apiOrganiser.updateEvent(
         event: widget.event,
         newEvent: updatedEvent,
       );
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-
-      if (response.statusCode == 200) {
-        Navigator.of(context).pop(true);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      Navigator.of(context).pop(true);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
@@ -386,19 +376,11 @@ class _ManageEventPageState extends State<ManageEventPage> {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = await apiOrganiser.deleteEvent(event: widget.event);
+      await apiOrganiser.deleteEvent(event: widget.event);
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-
-      if (response.statusCode == 200 || response.statusCode == 204) {
-        Navigator.of(context).pop(true);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      Navigator.of(context).pop(true);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);

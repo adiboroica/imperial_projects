@@ -122,22 +122,14 @@ class _OrganiserSignUpPageState extends State<OrganiserSignUpPage> {
 
     try {
       final apiUsers = context.read<AuthCubit>().apiUsers;
-      final response = await apiUsers.signUpAsOrganiser(signUp: signUp);
+      await apiUsers.signUpAsOrganiser(signUp: signUp);
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully')),
-        );
-        Navigator.of(context).pop();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Account created successfully')),
+      );
+      Navigator.of(context).pop();
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);

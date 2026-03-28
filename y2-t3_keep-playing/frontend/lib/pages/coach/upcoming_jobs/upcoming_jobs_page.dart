@@ -122,18 +122,10 @@ class _UpcomingJobCard extends StatelessWidget {
 
     final apiCoach = ApiCoach(client: context.read<AuthCubit>().apiClient);
     try {
-      final response = await apiCoach.cancelJob(event);
+      await apiCoach.cancelJob(event);
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
-
-      if (response.statusCode == 200) {
-        await context.read<UpcomingJobsCubit>().loadUpcomingJobs();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      await context.read<UpcomingJobsCubit>().loadUpcomingJobs();
     } catch (_) {
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading

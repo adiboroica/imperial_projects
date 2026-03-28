@@ -152,22 +152,14 @@ class _RateCoachPageState extends State<RateCoachPage> {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = await apiOrganiser.rateCoach(
+      await apiOrganiser.rateCoach(
         event: widget.event,
         rating: rating,
       );
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-
-      if (response.statusCode == 200) {
-        Navigator.of(context).pop(true);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      Navigator.of(context).pop(true);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);

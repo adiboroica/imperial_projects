@@ -139,18 +139,10 @@ class _FeedEventCard extends StatelessWidget {
 
     final apiCoach = ApiCoach(client: context.read<AuthCubit>().apiClient);
     try {
-      final response = await apiCoach.applyToJob(event);
+      await apiCoach.applyToJob(event);
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
-
-      if (response.statusCode == 200) {
-        await context.read<FeedCubit>().loadFeed();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      await context.read<FeedCubit>().loadFeed();
     } catch (_) {
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
@@ -173,18 +165,10 @@ class _FeedEventCard extends StatelessWidget {
 
     final apiCoach = ApiCoach(client: context.read<AuthCubit>().apiClient);
     try {
-      final response = await apiCoach.unapplyFromJob(event);
+      await apiCoach.unapplyFromJob(event);
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
-
-      if (response.statusCode == 200) {
-        await context.read<FeedCubit>().loadFeed();
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      await context.read<FeedCubit>().loadFeed();
     } catch (_) {
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading

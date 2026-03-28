@@ -1,0 +1,65 @@
+.titleStack {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 92vh;
+}
+
+.title {
+  text-align: center;
+  font-size: 55px;
+  font-weight: 700;
+  width: 80vw;
+  letter-spacing: -1px;
+  font-family: 'Greycliff CF', sans-serif;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 18px;
+  color: var(--mantine-color-dark-4);
+  font-weight: 80;
+  font-family: 'Greycliff CF', sans-serif;
+}
+
+.stackContent {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: linear-gradient(180deg, white, transparent);
+}
+
+.group {
+  width: 100%;
+  height: 60vh;
+  align-items: center;
+  background: white;
+  padding: 10px;
+}
+
+.groupTall {
+  width: 100%;
+  height: 80vh;
+  align-items: center;
+  background: white;
+  padding: 10px;
+}
+
+.groupShort {
+  width: 100%;
+  height: 40vh;
+  align-items: center;
+  padding: 10px;
+}
+
+.textSubGroup {
+  width: 35vw;
+}
+
+.endText {
+  font-size: 40px;
+  font-weight: 700;
+  width: 80%;
+  letter-spacing: -1px;
+  font-family: 'Greycliff CF', sans-serif;
+}

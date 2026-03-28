@@ -100,6 +100,14 @@ class _CoachSignUpPageState extends State<CoachSignUpPage> {
                           ),
                           onPressed: _pickQualificationFile,
                         ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Image uploads are temporarily unavailable.',
+                          style: TextStyle(
+                            color: Colors.orange.shade800,
+                            fontSize: 12,
+                          ),
+                        ),
                         const SizedBox(height: AppTheme.paddingLarge),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -149,7 +157,7 @@ class _CoachSignUpPageState extends State<CoachSignUpPage> {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
+      if (response.statusCode < 400) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );

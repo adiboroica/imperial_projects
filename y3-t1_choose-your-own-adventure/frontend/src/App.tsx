@@ -1,18 +1,17 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect } from 'react';
-import { Navigate, redirect, Route, Routes, useNavigate } from "react-router-dom";
-import 'reactflow/dist/style.css';
-import AppFooter from './components/Footer';
-import AppHeader from './components/Header';
-import AccountView from './pages/account/Account';
-import DashboardView from './pages/dashboard/Dashboard';
-import GeneratorView from './pages/generator/Generator';
-import InitialInputView from './pages/initialInput/InitialInput';
-import LoginView from './pages/login/Login';
-import SignupView from "./pages/signup/Signup";
-import WelcomeView from './pages/welcome/Welcome';
+import { Navigate, Route, Routes } from "react-router-dom";
+import '@xyflow/react/dist/style.css';
+import AppFooter from './components/layout/AppFooter';
+import AppHeader from './components/layout/AppHeader';
+import AccountView from './features/account/pages/AccountPage';
+import DashboardView from './features/dashboard/pages/DashboardPage';
+import GeneratorView from './features/generator/pages/GeneratorPage';
+import InitialInputView from './features/initialInput/pages/InitialInputPage';
+import LoginView from './features/account/pages/LoginPage';
+import SignupView from "./features/account/pages/SignupPage";
+import WelcomeView from './features/welcome/pages/WelcomePage';
 import { loginWithSession, selectLoggedIn, selectSessionLoginFail } from './store/features/accountSlice';
-import { startConnecting } from './store/features/wsSlice';
+import { startConnecting } from './store/wsSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import {
   ACCOUNT_PAGE,
@@ -22,19 +21,19 @@ import {
   INITIAL_INPUT_PAGE,
   LOGIN_PAGE,
   SIGNUP_PAGE
-} from './utils/pages';
+} from './utils/routes';
 
 
 const wrapView = (content: JSX.Element) => {
   return (
-    <main id="page-container" className="d-flex flex-column">
+    <main id="page-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <AppHeader
         links={[
           { label: "Home", link: HOME_PAGE },
           { label: "Dashboard", link: DASHBOARD_PAGE }
         ]}
       />
-      <div id="page-body" className="flex-grow-1">
+      <div id="page-body" style={{ flexGrow: 1 }}>
         {content}
       </div>
       <AppFooter />

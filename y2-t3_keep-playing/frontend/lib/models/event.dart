@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../utils.dart';
 import 'user.dart';
 
 class Event {
@@ -96,8 +97,7 @@ class Event {
   }
 
   static DateTime _parseDate(String dateStr) {
-    final parts = dateStr.split('-');
-    return DateTime(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+    return DateTime.parse(dateStr);
   }
 
   static TimeOfDay _parseTime(String timeStr) {
@@ -160,9 +160,6 @@ class NewEvent {
           creationEnded: event.creationEnded,
         );
 
-  static String _formatTime(TimeOfDay time) =>
-      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-
   Map<String, dynamic> toJson() => {
         'name': name,
         'location': location,
@@ -170,10 +167,10 @@ class NewEvent {
         'sport': sport,
         'role': role,
         'date': DateFormat('yyyy-MM-dd').format(date),
-        'start_time': _formatTime(startTime),
-        'end_time': _formatTime(endTime),
-        'flexible_start_time': _formatTime(flexibleStartTime),
-        'flexible_end_time': _formatTime(flexibleEndTime),
+        'start_time': formatTime(startTime),
+        'end_time': formatTime(endTime),
+        'flexible_start_time': formatTime(flexibleStartTime),
+        'flexible_end_time': formatTime(flexibleEndTime),
         'price': price.toString(),
         'coach': coach ? 'True' : 'False',
         'recurring': recurring ? 'True' : 'False',

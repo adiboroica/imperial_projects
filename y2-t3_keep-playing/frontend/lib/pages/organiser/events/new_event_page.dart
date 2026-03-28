@@ -5,6 +5,7 @@ import 'package:keep_playing_frontend/api/organiser.dart';
 import 'package:keep_playing_frontend/models/event.dart';
 import 'package:keep_playing_frontend/models/organiser.dart';
 import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/utils.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/exit_guard.dart';
@@ -143,12 +144,12 @@ class _NewEventPageState extends State<NewEventPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.access_time),
-                        title: Text('Start Time: ${_formatTime(_startTime)}'),
+                        title: Text('Start Time: ${formatTime(_startTime)}'),
                         onTap: () => _pickTime(isStart: true),
                       ),
                       ListTile(
                         leading: const Icon(Icons.access_time),
-                        title: Text('End Time: ${_formatTime(_endTime)}'),
+                        title: Text('End Time: ${formatTime(_endTime)}'),
                         onTap: () => _pickTime(isStart: false),
                       ),
                       SwitchListTile(
@@ -198,9 +199,6 @@ class _NewEventPageState extends State<NewEventPage> {
       ),
     );
   }
-
-  String _formatTime(TimeOfDay time) =>
-      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -268,19 +266,11 @@ class _NewEventPageState extends State<NewEventPage> {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = await apiOrganiser.addEvent(newEvent: newEvent);
+      await apiOrganiser.addEvent(newEvent: newEvent);
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Navigator.of(context).pop(true);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      Navigator.of(context).pop(true);
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);

@@ -7,14 +7,11 @@ import 'package:keep_playing_frontend/models/event.dart';
 import 'package:keep_playing_frontend/state/data_state.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
-import 'package:keep_playing_frontend/widgets/event_card.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
+import 'package:keep_playing_frontend/widgets/organiser_event_cards.dart';
 
-import '../offers_page.dart';
-import '../past_event/past_event_details_page.dart';
 import '../profile/organiser_cubit.dart';
 import 'events_cubit.dart';
-import 'manage_event_page.dart';
 import 'new_event_page.dart';
 
 class EventsForDayPage extends StatelessWidget {
@@ -95,11 +92,11 @@ class EventsForDayPage extends StatelessWidget {
 
   Widget _buildEventCard(BuildContext context, Event event) {
     if (event.isInThePast) {
-      return _DayPastEventCard(event: event);
+      return PastEventCard(event: event);
     } else if (event.hasCoach) {
-      return _DayScheduledEventCard(event: event);
+      return ScheduledEventCard(event: event);
     } else {
-      return _DayPendingEventCard(event: event);
+      return PendingEventCard(event: event);
     }
   }
 
@@ -119,142 +116,3 @@ class EventsForDayPage extends StatelessWidget {
   }
 }
 
-class _DayPastEventCard extends StatelessWidget {
-  final Event event;
-
-  const _DayPastEventCard({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return EventCard(
-      event: event,
-      leftButton: Padding(
-        padding: const EdgeInsets.all(AppTheme.paddingSmall),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => PastEventDetailsPage(
-                event: event,
-                eventsCubit: context.read<EventsCubit>(),
-                organiserCubit: context.read<OrganiserCubit>(),
-              ),
-            ),
-          ),
-          child: const Text(
-            'Details',
-            style: TextStyle(fontSize: AppTheme.buttonFontSize, color: Colors.white),
-          ),
-        ),
-      ),
-      rightButton: const SizedBox.shrink(),
-    );
-  }
-}
-
-class _DayScheduledEventCard extends StatelessWidget {
-  final Event event;
-
-  const _DayScheduledEventCard({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return EventCard(
-      event: event,
-      leftButton: Padding(
-        padding: const EdgeInsets.all(AppTheme.paddingSmall),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppTheme.scheduledColor),
-          onPressed: null,
-          child: const Text(
-            'Scheduled',
-            style: TextStyle(fontSize: AppTheme.buttonFontSize, color: Colors.white),
-          ),
-        ),
-      ),
-      rightButton: Padding(
-        padding: const EdgeInsets.all(AppTheme.paddingSmall),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
-          onPressed: () async {
-            final changed = await Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                builder: (_) => ManageEventPage(
-                  event: event,
-                  eventsCubit: context.read<EventsCubit>(),
-                ),
-              ),
-            );
-            if (changed == true) {
-              context.read<EventsCubit>().loadEvents();
-            }
-          },
-          child: const Text(
-            'Manage',
-            style: TextStyle(fontSize: AppTheme.buttonFontSize, color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DayPendingEventCard extends StatelessWidget {
-  final Event event;
-
-  const _DayPendingEventCard({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return EventCard(
-      event: event,
-      leftButton: Padding(
-        padding: const EdgeInsets.all(AppTheme.paddingSmall),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppTheme.successColor),
-          onPressed: () async {
-            final accepted = await Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                builder: (_) => OffersPage(
-                  event: event,
-                  eventsCubit: context.read<EventsCubit>(),
-                  organiser: context.read<OrganiserCubit>().state,
-                ),
-              ),
-            );
-            if (accepted == true) {
-              context.read<EventsCubit>().loadEvents();
-            }
-          },
-          child: Text(
-            'Offers (${event.offers.length})',
-            style: const TextStyle(fontSize: AppTheme.buttonFontSize, color: Colors.white),
-          ),
-        ),
-      ),
-      rightButton: Padding(
-        padding: const EdgeInsets.all(AppTheme.paddingSmall),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
-          onPressed: () async {
-            final changed = await Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                builder: (_) => ManageEventPage(
-                  event: event,
-                  eventsCubit: context.read<EventsCubit>(),
-                ),
-              ),
-            );
-            if (changed == true) {
-              context.read<EventsCubit>().loadEvents();
-            }
-          },
-          child: const Text(
-            'Manage',
-            style: TextStyle(fontSize: AppTheme.buttonFontSize, color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
-}

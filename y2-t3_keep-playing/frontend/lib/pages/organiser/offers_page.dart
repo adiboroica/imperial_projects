@@ -60,12 +60,13 @@ class _OffersPageState extends State<OffersPage> {
       final apiUsers = ApiUsers(client: authCubit.apiClient);
       final apiOrganiser = ApiOrganiser(client: authCubit.apiClient);
 
-      final entries = <_OfferEntry>[];
-      for (final pk in widget.event.offers) {
-        final user = await apiUsers.getUser(pk);
-        final rating = await apiOrganiser.getCoachRating(user);
-        entries.add(_OfferEntry(user: user, rating: rating));
-      }
+      final entries = await Future.wait(
+        widget.event.offers.map((pk) async {
+          final user = await apiUsers.getUser(pk);
+          final rating = await apiOrganiser.getCoachRating(user);
+          return _OfferEntry(user: user, rating: rating);
+        }),
+      );
 
       // Sort favourites first.
       entries.sort((a, b) {
@@ -139,22 +140,14 @@ class _OffersPageState extends State<OffersPage> {
 
     try {
       final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      final response = await apiOrganiser.acceptCoach(
+      await apiOrganiser.acceptCoach(
         event: widget.event,
         coach: coach,
       );
 
       if (!mounted) return;
       Navigator.of(context).pop(); // dismiss loading
-
-      if (response.statusCode == 200) {
-        Navigator.of(context).pop(true);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const RequestFailedDialog(),
-        );
-      }
+      Navigator.of(context).pop(true);
     } catch (_) {
       if (!mounted) return;
       Navigator.of(context).pop(); // dismiss loading
