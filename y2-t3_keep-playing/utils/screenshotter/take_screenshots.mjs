@@ -5,7 +5,7 @@
 // waits for a trigger file between shots so an outer process (or another
 // terminal) can advance it while the user manipulates the browser:
 //
-//   touch utils/screenshots_taker/.snap-next
+//   touch utils/screenshotter/.snap-next
 //
 // The script deletes the trigger after each snap. Prereq: Flutter app up at
 // http://localhost/app.html (docker compose up -d). See README.md.

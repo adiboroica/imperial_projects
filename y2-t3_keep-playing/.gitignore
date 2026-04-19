@@ -20,7 +20,7 @@ desktop.ini
 # Docker overrides
 docker-compose.override.yml
 
-# Screenshot helper (utils/screenshots_taker/)
-utils/screenshots_taker/node_modules/
-utils/screenshots_taker/.snap-next
+# Screenshot helper (utils/screenshotter/)
+utils/screenshotter/node_modules/
+utils/screenshotter/.snap-next
 

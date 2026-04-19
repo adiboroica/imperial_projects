@@ -1,4 +1,4 @@
-# screenshots_taker
+# screenshotter
 
 A tiny Node helper to (re)generate the PNGs in [`docs/screenshots/`](../../docs/screenshots/) against
 the currently running app. Drives a visible Chromium window at 390×844 (Pixel-
@@ -23,7 +23,7 @@ screenshot is supposed to show.
 ## First-run setup
 
 ```bash
-cd utils/screenshots_taker
+cd utils/screenshotter
 npm install
 ```
 
@@ -43,7 +43,7 @@ time, prompting between each. To advance, create the trigger file from
 **another terminal** (or via your editor):
 
 ```bash
-touch utils/screenshots_taker/.snap-next
+touch utils/screenshotter/.snap-next
 ```
 
 The script deletes the trigger after each snap and moves on to the next cue.
