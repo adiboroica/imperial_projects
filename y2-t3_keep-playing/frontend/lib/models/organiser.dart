@@ -1,5 +1,6 @@
-import 'user.dart';
+import 'package:keep_playing_frontend/models/user.dart';
 
+/// Organiser profile with favourite/blocked coach lists and event defaults.
 class Organiser {
   final List<int> favourites;
   final List<int> blocked;
@@ -30,6 +31,7 @@ class Organiser {
   bool isBlocked(User user) => blocked.contains(user.pk);
 }
 
+/// Outbound payload for updating an organiser's default event settings.
 class OrganiserDefaults {
   final String defaultSport;
   final String defaultRole;

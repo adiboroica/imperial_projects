@@ -1,35 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keep Playing</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #e8e8e8;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #111;
     }
+
+    /* Wrapper is the flexbox item — JS sets its size to match the scaled phone,
+       so flexbox always has the real visual dimensions to center. */
+    .wrapper {
+      position: relative;
+    }
+
+    /* Phone is always full-size; scale() shrinks it visually. */
     .phone {
-      width: 390px;
-      height: 844px;
-      overflow: hidden;
-      border: 1px solid #ccc;
+      --bezel: 8px;
+      --radius: 44px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 406px;   /* 390 + bezel*2 */
+      height: 860px;  /* 844 + bezel*2 */
+      border-radius: var(--radius);
+      background: #1c1c1e;
+      padding: var(--bezel);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.08),
+        0 0 0 1px rgba(0,0,0,.6),
+        0 30px 80px rgba(0,0,0,.5);
+      transform-origin: top left;
     }
-    .phone iframe {
+
+    .screen {
+      width: 100%;
+      height: 100%;
+      border-radius: calc(var(--radius) - var(--bezel));
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .screen iframe {
+      display: block;
       width: 100%;
       height: 100%;
       border: none;
-      background: white;
+    }
+
+    /* Power button — right */
+    .phone::after {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 160px;
+      width: 3px;
+      height: 64px;
+      background: #2c2c2e;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Volume buttons — left */
+    .phone::before {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 140px;
+      width: 3px;
+      height: 32px;
+      background: #2c2c2e;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 52px 0 #2c2c2e, 0 92px 0 #2c2c2e;
     }
   </style>
 </head>
 <body>
-  <div class="phone">
-    <iframe src="app.html"></iframe>
+  <div class="wrapper">
+    <div class="phone">
+      <div class="screen">
+        <iframe src="app.html"></iframe>
+      </div>
+    </div>
   </div>
+  <script>
+    (function () {
+      var wrapper = document.querySelector('.wrapper');
+      var phone   = document.querySelector('.phone');
+      var PW = 406;  // phone full width  (390 + 16)
+      var PH = 860;  // phone full height (844 + 16)
+
+      function fit() {
+        var s = Math.min(1, (window.innerHeight * 0.98) / PH, (window.innerWidth * 0.98) / PW);
+        phone.style.transform = 'scale(' + s + ')';
+        wrapper.style.width  = (PW * s) + 'px';
+        wrapper.style.height = (PH * s) + 'px';
+      }
+
+      fit();
+      window.addEventListener('resize', fit);
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,5 @@
+deny:
+  - package:keep_playing_frontend/api/**
+  - package:keep_playing_frontend/state/**
+  - package:keep_playing_frontend/pages/**
+  - package:keep_playing_frontend/widgets/**

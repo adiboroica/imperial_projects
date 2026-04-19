@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
-import 'coach_login_page.dart';
-import 'coach_profile_page.dart';
-import 'feed/feed_page.dart';
-import 'upcoming_jobs/upcoming_jobs_page.dart';
+import 'package:keep_playing_frontend/pages/coach/coach_profile_page.dart';
+import 'package:keep_playing_frontend/pages/coach/feed/feed_page.dart';
+import 'package:keep_playing_frontend/pages/coach/upcoming_jobs/upcoming_jobs_page.dart';
 
 class CoachHomePage extends StatefulWidget {
   const CoachHomePage({super.key});
@@ -38,17 +35,11 @@ class _CoachHomePageState extends State<CoachHomePage> {
         title: Text(_titles[_selectedIndex]),
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              context.read<AuthCubit>().logout();
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const CoachLoginPage()),
-              );
-            },
-          ),
-        ],
+        // Home is reached via pushReplacement from login, but the landing page
+        // still sits below in the navigator stack. Suppress the auto-implied
+        // back button so the user must explicitly log out to exit — matching
+        // the organiser home's behaviour. Logout lives in the Profile tab.
+        automaticallyImplyLeading: false,
       ),
       body: IndexedStack(
         index: _selectedIndex,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'confirmation_dialog.dart';
+import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 
 class ExitGuard extends StatelessWidget {
   final String title;

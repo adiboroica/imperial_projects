@@ -1,0 +1,34 @@
+# Git
+.git/
+.gitignore
+
+# Flutter / Dart build artifacts
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android Studio / IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Docs (not needed at runtime)
+*.md
+
+# Editor / OS cruft
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Docker artifacts
+.dockerignore
+
+# Plan/session files
+.claude/

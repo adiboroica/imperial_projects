@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 
+/// Authenticated user with profile info and role flags (coach/organiser).
 class User {
   final int pk;
   final String username;
@@ -50,6 +51,7 @@ class User {
   String get fullName => '$firstName $lastName';
 }
 
+/// Credentials payload for logging in.
 class UserLogin {
   final String username;
   final String password;
@@ -62,26 +64,46 @@ class UserLogin {
       };
 }
 
+/// Registration payload for a new coach, including optional qualification file.
 class CoachSignUp {
   final String username;
   final String password;
+  final String email;
+  final String firstName;
+  final String lastName;
   final XFile? qualificationFile;
 
   const CoachSignUp({
     required this.username,
     required this.password,
+    this.email = '',
+    this.firstName = '',
+    this.lastName = '',
     this.qualificationFile,
   });
 }
 
+/// Registration payload for a new organiser.
 class OrganiserSignUp {
   final String username;
   final String password;
+  final String email;
+  final String firstName;
+  final String lastName;
 
-  const OrganiserSignUp({required this.username, required this.password});
+  const OrganiserSignUp({
+    required this.username,
+    required this.password,
+    this.email = '',
+    this.firstName = '',
+    this.lastName = '',
+  });
 
   Map<String, dynamic> toJson() => {
         'username': username,
         'password': password,
+        'email': email,
+        'first_name': firstName,
+        'last_name': lastName,
       };
 }

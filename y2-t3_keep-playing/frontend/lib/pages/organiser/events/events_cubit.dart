@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/organiser.dart';
 import 'package:keep_playing_frontend/models/event.dart';
+import 'package:keep_playing_frontend/repositories/organiser_repository.dart';
 import 'package:keep_playing_frontend/state/data_state.dart';
 
 class EventsCubit extends Cubit<DataState<List<Event>>> {
-  final ApiOrganiser _apiOrganiser;
+  final OrganiserRepository _organiserRepository;
 
   List<Event> _allEvents = [];
   bool _allowPastEvents = true;
@@ -16,14 +16,14 @@ class EventsCubit extends Cubit<DataState<List<Event>>> {
   bool get allowPendingEvents => _allowPendingEvents;
   bool get allowScheduledEvents => _allowScheduledEvents;
 
-  EventsCubit({required ApiOrganiser apiOrganiser})
-      : _apiOrganiser = apiOrganiser,
+  EventsCubit({required OrganiserRepository organiserRepository})
+      : _organiserRepository = organiserRepository,
         super(const DataInitial());
 
   Future<void> loadEvents() async {
     emit(const DataLoading());
     try {
-      _allEvents = await _apiOrganiser.getEvents();
+      _allEvents = await _organiserRepository.getEvents();
       _emitFiltered();
     } catch (e) {
       emit(DataError(e.toString()));

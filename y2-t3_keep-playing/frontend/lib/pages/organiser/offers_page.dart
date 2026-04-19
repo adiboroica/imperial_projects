@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/organiser.dart';
-import 'package:keep_playing_frontend/api/users.dart';
 import 'package:keep_playing_frontend/models/coach_rating.dart';
 import 'package:keep_playing_frontend/models/event.dart';
 import 'package:keep_playing_frontend/models/organiser.dart';
 import 'package:keep_playing_frontend/models/user.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/repositories/organiser_repository.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
 
-import 'events/events_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_cubit.dart';
 
 class _OfferEntry {
   final User user;
@@ -56,17 +54,17 @@ class _OffersPageState extends State<OffersPage> {
     });
 
     try {
-      final authCubit = context.read<AuthCubit>();
-      final apiUsers = ApiUsers(client: authCubit.apiClient);
-      final apiOrganiser = ApiOrganiser(client: authCubit.apiClient);
+      final organiserRepository = context.read<OrganiserRepository>();
 
-      final entries = await Future.wait(
-        widget.event.offers.map((pk) async {
-          final user = await apiUsers.getUser(pk);
-          final rating = await apiOrganiser.getCoachRating(user);
-          return _OfferEntry(user: user, rating: rating);
-        }),
-      );
+      final rawOffers = await organiserRepository.getEventOffers(widget.event);
+      final entries = rawOffers.map((json) {
+        final user = User.fromJson(json);
+        final ratingJson = json['rating'] as Map<String, dynamic>?;
+        final rating = ratingJson != null
+            ? CoachRating.fromJson(ratingJson)
+            : const CoachRating(pk: 0, votes: 0, experience: 0, flexibility: 0, reliability: 0);
+        return _OfferEntry(user: user, rating: rating);
+      }).toList();
 
       // Sort favourites first.
       entries.sort((a, b) {
@@ -139,8 +137,8 @@ class _OffersPageState extends State<OffersPage> {
     showLoadingDialog(context);
 
     try {
-      final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      await apiOrganiser.acceptCoach(
+      final organiserRepository = context.read<OrganiserRepository>();
+      await organiserRepository.acceptCoach(
         event: widget.event,
         coach: coach,
       );

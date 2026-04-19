@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/organiser.dart';
-import 'package:keep_playing_frontend/api/users.dart';
+import 'package:keep_playing_frontend/repositories/user_repository.dart';
 import 'package:keep_playing_frontend/models/event.dart';
+import 'package:keep_playing_frontend/models/organiser.dart';
 import 'package:keep_playing_frontend/models/user.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/repositories/organiser_repository.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
@@ -13,9 +13,9 @@ import 'package:keep_playing_frontend/widgets/event_detail_tiles.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
 import 'package:keep_playing_frontend/widgets/user_info_tiles.dart';
 
-import '../events/events_cubit.dart';
-import '../profile/organiser_cubit.dart';
-import 'rate_coach_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/past_event/rate_coach_page.dart';
 
 class PastEventDetailsPage extends StatefulWidget {
   final Event event;
@@ -56,8 +56,8 @@ class _PastEventDetailsPageState extends State<PastEventDetailsPage> {
     });
 
     try {
-      final apiUsers = ApiUsers(client: context.read<AuthCubit>().apiClient);
-      final coach = await apiUsers.getUser(widget.event.coachPk!);
+      final userRepository = context.read<UserRepository>();
+      final coach = await userRepository.getUser(widget.event.coachPk!);
       if (mounted) {
         setState(() {
           _coachUser = coach;
@@ -99,7 +99,7 @@ class _PastEventDetailsPageState extends State<PastEventDetailsPage> {
       return ErrorDisplay(message: _error!, onRetry: _loadCoach);
     }
 
-    return BlocBuilder<OrganiserCubit, dynamic>(
+    return BlocBuilder<OrganiserCubit, Organiser>(
       builder: (context, organiser) {
         return SingleChildScrollView(
           child: Column(
@@ -213,10 +213,10 @@ class _CoachActionButtons extends StatelessWidget {
     showLoadingDialog(context);
 
     try {
-      final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
+      final organiserRepository = context.read<OrganiserRepository>();
       isBlocked
-          ? await apiOrganiser.unblockCoach(coach)
-          : await apiOrganiser.blockCoach(coach);
+          ? await organiserRepository.unblockCoach(coach)
+          : await organiserRepository.blockCoach(coach);
 
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
@@ -244,10 +244,10 @@ class _CoachActionButtons extends StatelessWidget {
     showLoadingDialog(context);
 
     try {
-      final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
+      final organiserRepository = context.read<OrganiserRepository>();
       isFav
-          ? await apiOrganiser.removeFavourite(coach)
-          : await apiOrganiser.addFavourite(coach);
+          ? await organiserRepository.removeFavourite(coach)
+          : await organiserRepository.addFavourite(coach);
 
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
@@ -265,8 +265,8 @@ class _CoachActionButtons extends StatelessWidget {
   Future<void> _navigateToRate(BuildContext context) async {
     final rated = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: context.read<AuthCubit>(),
+        builder: (_) => RepositoryProvider.value(
+          value: context.read<OrganiserRepository>(),
           child: RateCoachPage(
             event: event,
             eventsCubit: context.read<EventsCubit>(),
@@ -276,6 +276,8 @@ class _CoachActionButtons extends StatelessWidget {
     );
     if (rated == true && context.mounted) {
       context.read<EventsCubit>().loadEvents();
+      // Pop back to events list so the user sees the refreshed rated state
+      if (context.mounted) Navigator.of(context).pop();
     }
   }
 }

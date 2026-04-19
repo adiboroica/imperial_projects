@@ -1,7 +1,12 @@
 FROM python:3.12-slim
 
+# build-essential + libpq-dev are needed to compile psycopg2 from source
+# (production-grade, replaces the convenience psycopg2-binary wheel).
+# build-essential pulls in gcc, make, and the libc headers (stdlib.h etc.)
+# that are stripped from the slim base image.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
+    build-essential \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 import 'package:keep_playing_frontend/models/event.dart';
 import 'package:keep_playing_frontend/state/data_state.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
-import 'package:keep_playing_frontend/widgets/organiser_event_cards.dart';
+import 'package:keep_playing_frontend/pages/organiser/widgets/organiser_event_cards.dart';
 
-import '../profile/organiser_cubit.dart';
-import 'events_cubit.dart';
-import 'new_event_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/new_event_page.dart';
 
 class EventsForDayPage extends StatelessWidget {
   final DateTime day;
@@ -27,12 +26,7 @@ class EventsForDayPage extends StatelessWidget {
   });
 
   List<Event> _eventsForDay(List<Event> allEvents) {
-    return allEvents.where((event) {
-      if (isSameDay(event.date, day)) return true;
-      return event.date.weekday == day.weekday &&
-          event.isRecurring &&
-          event.date.isBefore(day);
-    }).toList();
+    return allEvents.where((event) => event.occursOn(day)).toList();
   }
 
   @override

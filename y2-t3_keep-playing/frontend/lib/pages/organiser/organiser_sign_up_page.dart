@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:keep_playing_frontend/repositories/user_repository.dart';
 import 'package:keep_playing_frontend/models/user.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/exit_guard.dart';
@@ -18,6 +18,9 @@ class OrganiserSignUpPage extends StatefulWidget {
 class _OrganiserSignUpPageState extends State<OrganiserSignUpPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isSubmitting = false;
 
@@ -25,6 +28,9 @@ class _OrganiserSignUpPageState extends State<OrganiserSignUpPage> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -86,6 +92,33 @@ class _OrganiserSignUpPageState extends State<OrganiserSignUpPage> {
                             return null;
                           },
                         ),
+                        const SizedBox(height: AppTheme.paddingMedium),
+                        TextFormField(
+                          controller: _firstNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'First Name',
+                            prefixIcon: Icon(Icons.badge),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.paddingMedium),
+                        TextFormField(
+                          controller: _lastNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Last Name',
+                            prefixIcon: Icon(Icons.badge),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.paddingMedium),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.email),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
                         const SizedBox(height: AppTheme.paddingLarge),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -118,11 +151,14 @@ class _OrganiserSignUpPageState extends State<OrganiserSignUpPage> {
     final signUp = OrganiserSignUp(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
+      email: _emailController.text.trim(),
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
     );
 
     try {
-      final apiUsers = context.read<AuthCubit>().apiUsers;
-      await apiUsers.signUpAsOrganiser(signUp: signUp);
+      final userRepository = context.read<UserRepository>();
+      await userRepository.signUpAsOrganiser(signUp: signUp);
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);

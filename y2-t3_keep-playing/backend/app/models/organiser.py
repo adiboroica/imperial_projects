@@ -4,6 +4,8 @@ from .user import User
 
 
 class Organiser(models.Model):
+    """Organiser profile with favourites, blocked lists, and event defaults."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     favourites = models.ManyToManyField(User, related_name='favourite_coaches', blank=True)
     blocked = models.ManyToManyField(User, related_name='blocked_coaches', blank=True)

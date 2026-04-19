@@ -46,6 +46,15 @@ class _SharedLoginPageState extends State<SharedLoginPage> {
         title: Text(widget.title),
         backgroundColor: AppTheme.primaryColor,
         foregroundColor: Colors.white,
+        // Explicit back button — Flutter's auto-implied leading occasionally
+        // doesn't appear on the web/canvas renderer, so we force it here.
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                tooltip: 'Back',
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null,
       ),
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {

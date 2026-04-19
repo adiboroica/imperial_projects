@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+import 'package:keep_playing_frontend/constants.dart';
 
 class SportDropdown extends StatelessWidget {
   final String? value;

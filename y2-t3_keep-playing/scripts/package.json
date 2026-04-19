@@ -1,0 +1,8 @@
+{
+  "name": "kp-screenshot-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "puppeteer": "^23"
+  }
+}

@@ -1,0 +1,3 @@
+deny:
+  - package:keep_playing_frontend/state/**
+  - package:keep_playing_frontend/pages/**

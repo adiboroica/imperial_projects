@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/users.dart';
+import 'package:keep_playing_frontend/repositories/user_repository.dart';
 import 'package:keep_playing_frontend/models/event.dart';
 import 'package:keep_playing_frontend/models/user.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
 import 'package:keep_playing_frontend/widgets/event_detail_tiles.dart';
@@ -38,9 +37,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     });
 
     try {
-      final apiUsers =
-          ApiUsers(client: context.read<AuthCubit>().apiClient);
-      final organiser = await apiUsers.getOrganiserOfEvent(widget.event);
+      final userRepository = context.read<UserRepository>();
+      final organiser = await userRepository.getOrganiserOfEvent(widget.event);
       if (mounted) {
         setState(() {
           _organiser = organiser;

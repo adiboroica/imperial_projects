@@ -1,0 +1,46 @@
+[importlinter]
+root_packages =
+    app
+
+[importlinter:contract:1]
+name = Models have no internal imports
+type = forbidden
+source_modules = app.models
+forbidden_modules =
+    app.serializers
+    app.services
+    app.views
+    app.email
+
+[importlinter:contract:2]
+name = Serializers only import models
+type = forbidden
+source_modules = app.serializers
+forbidden_modules =
+    app.services
+    app.views
+    app.email
+
+[importlinter:contract:3]
+name = Services do not import views or serializers
+type = forbidden
+source_modules = app.services
+forbidden_modules =
+    app.views
+    app.serializers
+
+[importlinter:contract:4]
+name = Views do not import models directly
+type = forbidden
+source_modules = app.views
+forbidden_modules = app.models
+allow_indirect_imports = True
+
+[importlinter:contract:5]
+name = Email only imports models
+type = forbidden
+source_modules = app.email
+forbidden_modules =
+    app.serializers
+    app.services
+    app.views

@@ -1,7 +1,15 @@
 include: package:flutter_lints/flutter.yaml
 
+plugins:
+  import_guard: 0.1.0
+
 linter:
   rules:
     prefer_const_constructors: true
     prefer_const_declarations: true
     avoid_print: true
+    always_use_package_imports: true
+    # Flag cases where BuildContext is used after an async gap without a
+    # mounted check. The existing code already follows this pattern; the lint
+    # makes it enforceable.
+    use_build_context_synchronously: true

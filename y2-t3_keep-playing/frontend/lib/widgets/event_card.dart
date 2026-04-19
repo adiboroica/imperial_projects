@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/event.dart';
-import '../utils.dart';
-import 'app_theme.dart';
+import 'package:keep_playing_frontend/models/event.dart';
+import 'package:keep_playing_frontend/utils.dart';
+import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
 class EventCard extends StatelessWidget {
   final Event event;

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:keep_playing_frontend/api/status.dart';
+import 'package:keep_playing_frontend/repositories/user_repository.dart';
 import 'package:keep_playing_frontend/models/user.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/exit_guard.dart';
@@ -19,6 +20,9 @@ class CoachSignUpPage extends StatefulWidget {
 class _CoachSignUpPageState extends State<CoachSignUpPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _imagePicker = ImagePicker();
 
@@ -29,6 +33,9 @@ class _CoachSignUpPageState extends State<CoachSignUpPage> {
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -90,6 +97,33 @@ class _CoachSignUpPageState extends State<CoachSignUpPage> {
                             return null;
                           },
                         ),
+                        const SizedBox(height: AppTheme.paddingMedium),
+                        TextFormField(
+                          controller: _firstNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'First Name',
+                            prefixIcon: Icon(Icons.badge),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.paddingMedium),
+                        TextFormField(
+                          controller: _lastNameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Last Name',
+                            prefixIcon: Icon(Icons.badge),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.paddingMedium),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.email),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
                         const SizedBox(height: AppTheme.paddingLarge),
                         OutlinedButton.icon(
                           icon: const Icon(Icons.upload_file),
@@ -147,17 +181,20 @@ class _CoachSignUpPageState extends State<CoachSignUpPage> {
     final signUp = CoachSignUp(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
+      email: _emailController.text.trim(),
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
       qualificationFile: _qualificationFile,
     );
 
     try {
-      final apiUsers = context.read<AuthCubit>().apiUsers;
-      final response = await apiUsers.signUpAsCoach(signUp: signUp);
+      final userRepository = context.read<UserRepository>();
+      final response = await userRepository.signUpAsCoach(signUp: signUp);
 
       if (!mounted) return;
       setState(() => _isSubmitting = false);
 
-      if (response.statusCode < 400) {
+      if (response.statusCode < HttpStatus.badRequest) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );

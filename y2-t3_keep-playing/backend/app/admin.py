@@ -13,7 +13,7 @@ class OrganiserInline(admin.TabularInline):
 class UserAdmin(DjangoUserAdmin):
     inlines = [CoachInline, OrganiserInline]
     list_display = DjangoUserAdmin.list_display + ('is_coach', 'is_organiser')
-    fieldsets = DjangoUserAdmin.fieldsets+ (
+    fieldsets = DjangoUserAdmin.fieldsets + (
         (                      
             'Additional Fields', # you can also use None 
             {

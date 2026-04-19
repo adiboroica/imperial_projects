@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'pages/landing_page.dart';
-import 'widgets/app_theme.dart';
+import 'package:keep_playing_frontend/pages/landing_page.dart';
+import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
 class KeepPlayingApp extends StatelessWidget {
   const KeepPlayingApp({super.key});

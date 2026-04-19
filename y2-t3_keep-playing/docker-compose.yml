@@ -1,14 +1,17 @@
+# ⚠️  The defaults in this file are for LOCAL DEV only. In production you
+# MUST provide a real `.env` (see `.env.example`). Running with DEBUG=False
+# will refuse to boot if SECRET_KEY or POSTGRES_PASSWORD is still the default.
 services:
   postgres:
     image: postgres:14
     environment:
-      POSTGRES_DB: keep_playing
-      POSTGRES_USER: keepplaying
-      POSTGRES_PASSWORD: keepplaying
+      POSTGRES_DB: ${POSTGRES_DB_NAME:-keep_playing}
+      POSTGRES_USER: ${POSTGRES_USER:-keepplaying}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keepplaying}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U keepplaying"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-keepplaying}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -17,44 +20,106 @@ services:
     build:
       context: ./backend
       dockerfile: docker/Dockerfile
-    ports:
-      - "8000:8000"
+    # No host port mapping — nginx (frontend) proxies via the internal
+    # `backend:8000` hostname. The `backend-dev` profile below does expose 8000
+    # for direct-from-host development (e.g., running Flutter locally).
     environment:
-      POSTGRES_DB_NAME: keep_playing
-      POSTGRES_USER: keepplaying
-      POSTGRES_PASSWORD: keepplaying
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME:-keep_playing}
+      POSTGRES_USER: ${POSTGRES_USER:-keepplaying}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keepplaying}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
-      USE_S3: "False"
-      EMAIL_NOTIFICATIONS_ENABLED: "False"
-      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      SECRET_KEY: ${SECRET_KEY:-django-insecure-dev-key-change-in-production}
+      DEBUG: ${DEBUG:-True}
+      USE_S3: ${USE_S3:-False}
+      EMAIL_NOTIFICATIONS_ENABLED: ${EMAIL_NOTIFICATIONS_ENABLED:-False}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-False}
     volumes:
-      - ./backend/media:/app/media
+      - media_data:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend-worker:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    environment:
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME:-keep_playing}
+      POSTGRES_USER: ${POSTGRES_USER:-keepplaying}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keepplaying}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      SECRET_KEY: ${SECRET_KEY:-django-insecure-dev-key-change-in-production}
+      DEBUG: ${DEBUG:-True}
+      USE_S3: ${USE_S3:-False}
+      EMAIL_NOTIFICATIONS_ENABLED: ${EMAIL_NOTIFICATIONS_ENABLED:-False}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
+    entrypoint: ["python", "manage.py", "qcluster"]
     depends_on:
       postgres:
         condition: service_healthy
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        API_BASE_URL: ${API_BASE_URL:-}
     ports:
       - "80:80"
+    volumes:
+      # Share the media volume so nginx can serve uploads directly.
+      - media_data:/var/www/media:ro
     depends_on:
       - backend
+
+  # --- Dev services (docker compose --profile dev up) ---
+
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME:-keep_playing}
+      POSTGRES_USER: ${POSTGRES_USER:-keepplaying}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keepplaying}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      DEBUG: "True"
+      USE_S3: "False"
+      EMAIL_NOTIFICATIONS_ENABLED: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      SEED_DEMO_DATA: "True"
+    volumes:
+      - ./backend:/app
+      - media_data:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["bash", "-c", "python manage.py migrate --noinput && python manage.py seed_demo_data && python manage.py runserver 0.0.0.0:8000"]
+    profiles: ["dev"]
+
+  # --- Test services (docker compose run --rm backend-test) ---
 
   backend-test:
     build:
       context: ./backend
       dockerfile: docker/Dockerfile
     environment:
-      POSTGRES_DB_NAME: keep_playing
-      POSTGRES_USER: keepplaying
-      POSTGRES_PASSWORD: keepplaying
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME:-keep_playing}
+      POSTGRES_USER: ${POSTGRES_USER:-keepplaying}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-keepplaying}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
+      DEBUG: "True"
+      Q_SYNC: "True"
     depends_on:
       postgres:
         condition: service_healthy
-    entrypoint: ["bash", "-c", "python manage.py makemigrations app --noinput && pytest --tb=short -q"]
+    entrypoint: ["bash", "-c", "python manage.py migrate --noinput && pytest --tb=short -q"]
     profiles: ["test"]
 
   frontend-test:
@@ -64,5 +129,13 @@ services:
     command: ["flutter", "test", "--reporter=compact"]
     profiles: ["test"]
 
+  frontend-analyze:
+    build:
+      context: ./frontend
+      target: builder
+    command: ["flutter", "analyze", "--no-fatal-infos"]
+    profiles: ["test"]
+
 volumes:
   pgdata:
+  media_data:

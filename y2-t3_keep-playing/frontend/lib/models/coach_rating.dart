@@ -1,3 +1,4 @@
+/// Aggregated coach rating with vote totals and per-category averages.
 class CoachRating {
   final int pk;
   final int votes;
@@ -26,6 +27,7 @@ class CoachRating {
   double get reliabilityAverage => votes == 0 ? 0 : reliability / votes;
 }
 
+/// Outbound rating payload for submitting a new coach review.
 class CoachNewRating {
   final int experience;
   final int flexibility;

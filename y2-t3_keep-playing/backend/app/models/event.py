@@ -4,6 +4,8 @@ from .user import User
 
 
 class Event(models.Model):
+    """Sporting event with scheduling, pricing, and coach assignment."""
+
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     details = models.CharField(max_length=200)
@@ -12,7 +14,6 @@ class Event(models.Model):
     end_time = models.TimeField()
     flexible_start_time = models.TimeField()
     flexible_end_time = models.TimeField()
-    coach = models.BooleanField()
     price = models.IntegerField()
     coach_user = models.ForeignKey(
         User, related_name='events', on_delete=models.SET_NULL, null=True, blank=True,
@@ -28,6 +29,10 @@ class Event(models.Model):
     creation_ended = models.DateTimeField(null=True, blank=True)
     voted = models.BooleanField(default=False)
     recurring_end_date = models.DateField(null=True, blank=True)
+
+    @property
+    def coach(self):
+        return self.coach_user_id is not None
 
     def __str__(self):
         return f"{self.name} ({self.date})"

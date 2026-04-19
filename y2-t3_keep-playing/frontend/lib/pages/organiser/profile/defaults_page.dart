@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/organiser.dart';
 import 'package:keep_playing_frontend/models/organiser.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/repositories/organiser_repository.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/exit_guard.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
 import 'package:keep_playing_frontend/widgets/sport_role_dropdowns.dart';
 
-import 'organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
 
 class DefaultsPage extends StatefulWidget {
   const DefaultsPage({super.key});
@@ -142,8 +141,8 @@ class _DefaultsPageState extends State<DefaultsPage> {
     );
 
     try {
-      final apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      await apiOrganiser.updateDefaults(defaults: defaults);
+      final organiserRepository = context.read<OrganiserRepository>();
+      await organiserRepository.updateDefaults(defaults: defaults);
 
       if (!mounted) return;
       setState(() => _isSaving = false);

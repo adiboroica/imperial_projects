@@ -4,6 +4,8 @@ from .user import User
 
 
 class Coach(models.Model):
+    """Coach profile with aggregated rating scores."""
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     votes = models.IntegerField(default=0)
     experience = models.IntegerField(default=0)

@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
-import '../organiser_login_page.dart';
-import 'blocked_page.dart';
-import 'defaults_page.dart';
-import 'favourites_page.dart';
-import 'organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/landing_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/blocked_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/defaults_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/favourites_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
 
 class OrganiserProfilePage extends StatelessWidget {
   const OrganiserProfilePage({super.key});
@@ -88,10 +88,14 @@ class OrganiserProfilePage extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout, color: AppTheme.cancelColor),
             title: const Text('Logout'),
-            onTap: () {
-              context.read<AuthCubit>().logout();
+            // Must await logout() so AuthCubit emits AuthUnauthenticated before
+            // we navigate to Landing. Otherwise Landing's session-restore check
+            // sees a stale AuthAuthenticated state and bounces us back to home.
+            onTap: () async {
+              await context.read<AuthCubit>().logout();
+              if (!context.mounted) return;
               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const OrganiserLoginPage()),
+                MaterialPageRoute(builder: (_) => const LandingPage()),
                 (route) => false,
               );
             },

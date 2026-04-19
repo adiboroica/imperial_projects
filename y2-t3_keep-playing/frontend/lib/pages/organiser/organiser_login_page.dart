@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../shared_login_page.dart';
-import 'organiser_home_page.dart';
-import 'organiser_sign_up_page.dart';
+import 'package:keep_playing_frontend/pages/shared_login_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/organiser_home_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/organiser_sign_up_page.dart';
 
 class OrganiserLoginPage extends StatelessWidget {
   const OrganiserLoginPage({super.key});

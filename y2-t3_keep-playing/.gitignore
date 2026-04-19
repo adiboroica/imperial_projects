@@ -19,3 +19,8 @@ desktop.ini
 
 # Docker overrides
 docker-compose.override.yml
+
+# Screenshot helper (scripts/take_screenshots.mjs)
+scripts/node_modules/
+scripts/.snap-next
+

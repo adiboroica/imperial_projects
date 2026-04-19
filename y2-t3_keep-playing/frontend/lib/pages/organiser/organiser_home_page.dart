@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/organiser.dart';
 import 'package:keep_playing_frontend/models/organiser.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/repositories/organiser_repository.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
 
-import 'events/events_cubit.dart';
-import 'events/events_page.dart';
-import 'profile/organiser_cubit.dart';
-import 'profile/organiser_profile_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_profile_page.dart';
 
 class OrganiserHomePage extends StatefulWidget {
   const OrganiserHomePage({super.key});
@@ -24,18 +23,18 @@ class _OrganiserHomePageState extends State<OrganiserHomePage> {
   Organiser? _organiser;
   String? _error;
 
-  late final ApiOrganiser _apiOrganiser;
+  late final OrganiserRepository _organiserRepository;
 
   @override
   void initState() {
     super.initState();
-    _apiOrganiser = ApiOrganiser(client: context.read<AuthCubit>().apiClient);
+    _organiserRepository = context.read<OrganiserRepository>();
     _loadOrganiser();
   }
 
   Future<void> _loadOrganiser() async {
     try {
-      final organiser = await _apiOrganiser.getOrganiser();
+      final organiser = await _organiserRepository.getOrganiser();
       if (mounted) {
         setState(() => _organiser = organiser);
       }
@@ -76,11 +75,11 @@ class _OrganiserHomePageState extends State<OrganiserHomePage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => EventsCubit(apiOrganiser: _apiOrganiser)..loadEvents(),
+          create: (_) => EventsCubit(organiserRepository: _organiserRepository)..loadEvents(),
         ),
         BlocProvider(
           create: (_) => OrganiserCubit(
-            apiOrganiser: _apiOrganiser,
+            organiserRepository: _organiserRepository,
             initialOrganiser: _organiser!,
           ),
         ),

@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 
-import 'package:keep_playing_frontend/api/organiser.dart';
-import 'package:keep_playing_frontend/api/users.dart';
+import 'package:keep_playing_frontend/repositories/user_repository.dart';
 import 'package:keep_playing_frontend/models/user.dart';
-import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/repositories/organiser_repository.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/confirmation_dialog.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
 import 'package:keep_playing_frontend/widgets/exit_guard.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
 
-import 'organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
 
 class CoachChecklistPage extends StatefulWidget {
   final String title;
   final String exitGuardContent;
   final String confirmTitle;
   final Set<int> initialSelectedPks;
-  final Future<Response> Function(ApiOrganiser apiOrganiser, List<int> pks)
+  final Future<Response> Function(OrganiserRepository organiserRepository, List<int> pks)
       onSave;
 
   const CoachChecklistPage({
@@ -56,8 +55,8 @@ class _CoachChecklistPageState extends State<CoachChecklistPage> {
     });
 
     try {
-      final apiUsers = ApiUsers(client: context.read<AuthCubit>().apiClient);
-      final allUsers = await apiUsers.getAllUsers();
+      final userRepository = context.read<UserRepository>();
+      final allUsers = await userRepository.getAllUsers();
       final coaches = allUsers.where((u) => u.isCoach).toList();
 
       if (mounted) {
@@ -165,9 +164,8 @@ class _CoachChecklistPageState extends State<CoachChecklistPage> {
     setState(() => _isSaving = true);
 
     try {
-      final apiOrganiser =
-          ApiOrganiser(client: context.read<AuthCubit>().apiClient);
-      await widget.onSave(apiOrganiser, _selectedPks.toList());
+      final organiserRepository = context.read<OrganiserRepository>();
+      await widget.onSave(organiserRepository, _selectedPks.toList());
 
       if (!mounted) return;
       setState(() => _isSaving = false);

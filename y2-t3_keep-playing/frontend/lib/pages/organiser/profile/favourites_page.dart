@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'coach_checklist_page.dart';
-import 'organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/coach_checklist_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
 
 class FavouritesPage extends StatelessWidget {
   const FavouritesPage({super.key});
@@ -15,7 +15,7 @@ class FavouritesPage extends StatelessWidget {
       confirmTitle: 'Save favourites?',
       initialSelectedPks:
           context.read<OrganiserCubit>().state.favourites.toSet(),
-      onSave: (apiOrganiser, pks) => apiOrganiser.updateFavourites(pks),
+      onSave: (organiserRepository, pks) => organiserRepository.updateFavourites(pks),
     );
   }
 }

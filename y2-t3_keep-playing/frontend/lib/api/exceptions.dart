@@ -1,3 +1,4 @@
+/// HTTP error thrown when the API returns a 4xx/5xx status code.
 class ApiException implements Exception {
   final int statusCode;
   final String body;

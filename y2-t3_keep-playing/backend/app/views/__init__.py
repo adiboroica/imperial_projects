@@ -1,6 +1,7 @@
-from .auth import CreateCoachUser, CreateOrganiserUser, HelloView
+from .auth import CreateCoachUser, CreateOrganiserUser, HelloView, LogoutView, ThrottledObtainAuthToken
+from .health import HealthView
 from .users import UsersRecordView, UserRecordView
-from .events import EventView, EventGetOrganiserView, ExportDocx
+from .events import EventView, EventGetOrganiserView, EventOffersView
 from .coaches import (
     CoachFeedView,
     CoachUpcomingJobsView,
@@ -8,7 +9,6 @@ from .coaches import (
     CoachCancelEventView,
     CoachUnapplyView,
     CoachOrganiserView,
-    VoteCoachView,
     CoachModelView,
 )
 from .organisers import (
@@ -18,24 +18,27 @@ from .organisers import (
     OrganiserAddFavouriteCoachView,
     OrganiserRemoveFavouriteCoachView,
     AcceptOfferView,
+    VoteCoachView,
 )
 
 __all__ = [
     'CreateCoachUser',
     'CreateOrganiserUser',
+    'HealthView',
     'HelloView',
+    'LogoutView',
+    'ThrottledObtainAuthToken',
     'UsersRecordView',
     'UserRecordView',
     'EventView',
     'EventGetOrganiserView',
-    'ExportDocx',
+    'EventOffersView',
     'CoachFeedView',
     'CoachUpcomingJobsView',
     'CoachEventView',
     'CoachCancelEventView',
     'CoachUnapplyView',
     'CoachOrganiserView',
-    'VoteCoachView',
     'CoachModelView',
     'OrganiserView',
     'OrganiserBlockCoachView',
@@ -43,4 +46,5 @@ __all__ = [
     'OrganiserAddFavouriteCoachView',
     'OrganiserRemoveFavouriteCoachView',
     'AcceptOfferView',
+    'VoteCoachView',
 ]

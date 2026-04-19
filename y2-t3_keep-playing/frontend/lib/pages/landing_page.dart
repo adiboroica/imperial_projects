@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user.dart';
-import '../state/auth_cubit.dart';
-import '../state/auth_state.dart';
-import 'coach/coach_home_page.dart';
-import 'coach/coach_login_page.dart';
-import 'organiser/organiser_home_page.dart';
-import 'organiser/organiser_login_page.dart';
+import 'package:keep_playing_frontend/models/user.dart';
+import 'package:keep_playing_frontend/state/auth_cubit.dart';
+import 'package:keep_playing_frontend/state/auth_state.dart';
+import 'package:keep_playing_frontend/pages/coach/coach_home_page.dart';
+import 'package:keep_playing_frontend/pages/coach/coach_login_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/organiser_home_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/organiser_login_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -41,7 +41,9 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _navigateForUser(User user) {
-    if (user.isOrganiser) {
+    if (user.isOrganiser && user.isCoach) {
+      _showRoleChooser();
+    } else if (user.isOrganiser) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const OrganiserHomePage()),
       );
@@ -50,6 +52,37 @@ class _LandingPageState extends State<LandingPage> {
         MaterialPageRoute(builder: (_) => const CoachHomePage()),
       );
     }
+  }
+
+  void _showRoleChooser() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Choose your role'),
+        content: const Text('You have both roles. Which view would you like to use?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const OrganiserHomePage()),
+              );
+            },
+            child: const Text('Organiser'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const CoachHomePage()),
+              );
+            },
+            child: const Text('Coach'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _maybeShowBanner() async {

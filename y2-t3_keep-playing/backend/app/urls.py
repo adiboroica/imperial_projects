@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
 
 from .views import (
     AcceptOfferView,
@@ -13,21 +12,29 @@ from .views import (
     CreateCoachUser,
     CreateOrganiserUser,
     EventGetOrganiserView,
+    EventOffersView,
     EventView,
+    HealthView,
     HelloView,
+    LogoutView,
     OrganiserAddFavouriteCoachView,
     OrganiserBlockCoachView,
     OrganiserRemoveFavouriteCoachView,
     OrganiserUnblockCoachView,
     OrganiserView,
+    ThrottledObtainAuthToken,
     UserRecordView,
     UsersRecordView,
     VoteCoachView,
 )
 
 urlpatterns = [
+    # Health (unauthenticated, for orchestrator liveness probes)
+    path('health/', HealthView.as_view(), name='health'),
+
     # Auth
-    path('login/', obtain_auth_token, name='login'),
+    path('login/', ThrottledObtainAuthToken.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('new_coach/', CreateCoachUser.as_view(), name='new-coach'),
     path('new_organiser/', CreateOrganiserUser.as_view(), name='new-organiser'),
 
@@ -58,5 +65,6 @@ urlpatterns = [
     path('organiser/<int:pk>/', CoachOrganiserView.as_view(), name='organiser-detail'),
 
     # Event cross-cutting
+    path('organiser/events/<int:pk>/offers/', EventOffersView.as_view(), name='event-offers'),
     path('event/<int:pk>/organiser/', EventGetOrganiserView.as_view(), name='event-organiser'),
 ]

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:keep_playing_frontend/api/coach.dart';
 import 'package:keep_playing_frontend/models/event.dart';
+import 'package:keep_playing_frontend/repositories/coach_repository.dart';
 import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/state/data_state.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
@@ -11,19 +11,18 @@ import 'package:keep_playing_frontend/widgets/error_display.dart';
 import 'package:keep_playing_frontend/widgets/event_card.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
 
-import '../event_details_page.dart';
-import 'feed_cubit.dart';
+import 'package:keep_playing_frontend/pages/coach/event_details_page.dart';
+import 'package:keep_playing_frontend/pages/coach/feed/feed_cubit.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authCubit = context.read<AuthCubit>();
-    final apiCoach = ApiCoach(client: authCubit.apiClient);
+    final coachRepository = context.read<CoachRepository>();
 
     return BlocProvider(
-      create: (_) => FeedCubit(apiCoach: apiCoach)..loadFeed(),
+      create: (_) => FeedCubit(coachRepository: coachRepository)..loadFeed(),
       child: const _FeedView(),
     );
   }
@@ -137,9 +136,9 @@ class _FeedEventCard extends StatelessWidget {
 
     showLoadingDialog(context);
 
-    final apiCoach = ApiCoach(client: context.read<AuthCubit>().apiClient);
+    final coachRepository = context.read<CoachRepository>();
     try {
-      await apiCoach.applyToJob(event);
+      await coachRepository.applyToJob(event);
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
       await context.read<FeedCubit>().loadFeed();
@@ -163,9 +162,9 @@ class _FeedEventCard extends StatelessWidget {
 
     showLoadingDialog(context);
 
-    final apiCoach = ApiCoach(client: context.read<AuthCubit>().apiClient);
+    final coachRepository = context.read<CoachRepository>();
     try {
-      await apiCoach.unapplyFromJob(event);
+      await coachRepository.unapplyFromJob(event);
       if (!context.mounted) return;
       Navigator.of(context).pop(); // dismiss loading
       await context.read<FeedCubit>().loadFeed();

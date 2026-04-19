@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../models/event.dart';
-import 'app_theme.dart';
+import 'package:keep_playing_frontend/models/event.dart';
+import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
 class CalendarView extends StatefulWidget {
   final List<Event> events;
@@ -23,12 +23,7 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime _focusedDay = DateTime.now();
 
   List<Event> _getEventsForDay(DateTime day) {
-    return widget.events.where((event) {
-      if (isSameDay(day, event.date)) return true;
-      return day.weekday == event.date.weekday &&
-          event.isRecurring &&
-          event.date.isBefore(day);
-    }).toList();
+    return widget.events.where((event) => event.occursOn(day)).toList();
   }
 
   @override
@@ -38,7 +33,7 @@ class _CalendarViewState extends State<CalendarView> {
       child: TableCalendar(
         startingDayOfWeek: StartingDayOfWeek.monday,
         firstDay: DateTime.utc(2010, 10, 16),
-        lastDay: DateTime.utc(2030, 3, 14),
+        lastDay: DateTime.now().add(const Duration(days: 365 * 5)),
         focusedDay: _focusedDay,
         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         onDaySelected: (selectedDay, focusedDay) {

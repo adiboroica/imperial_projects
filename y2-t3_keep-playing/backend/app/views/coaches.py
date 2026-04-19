@@ -1,122 +1,101 @@
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..email import notify_organiser_coach_cancelled, notify_organiser_new_offer
-from ..models import Coach, Event, Organiser, User
-from ..permissions import IsCoach, IsOrganiser
-from ..serializers import CoachSerializer, EventSerializer, UserSerializer
+from app.permissions import IsCoach
+from app.serializers import CoachSerializer, EventSerializer, PublicUserSerializer
+from app.services.coach import CoachServiceError, apply_to_event, cancel_assigned_event, get_coach_rating, get_feed_events, get_upcoming_jobs, get_user_profile, unapply_from_event
+from app.views._errors import error_response as _error_response
 
 
 class CoachOrganiserView(APIView):
+    """Return a user's public profile by primary key."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, format=None):
-        user = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(user, many=False)
+        try:
+            user = get_user_profile(pk)
+        except CoachServiceError as e:
+            return _error_response(e)
+        serializer = PublicUserSerializer(user, many=False)
         return Response(serializer.data)
 
 
 class CoachEventView(APIView):
+    """Apply to an event as a coach."""
+
     permission_classes = [IsAuthenticated, IsCoach]
 
-    def get(self, request, pk, format=None):
-        user = get_object_or_404(User, pk=pk)
-        serializer = UserSerializer(user, many=False)
-        return Response(serializer.data)
-
     def patch(self, request, pk, format=None):
-        event = get_object_or_404(Event, pk=pk)
-        event.offers.add(request.user)
-        notify_organiser_new_offer(event.organiser_user, request.user, event)
+        try:
+            event = apply_to_event(request.user, pk)
+        except CoachServiceError as e:
+            return _error_response(e)
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class CoachUnapplyView(APIView):
+    """Withdraw a coach's offer from an event."""
+
     permission_classes = [IsAuthenticated, IsCoach]
 
     def patch(self, request, pk, format=None):
-        event = get_object_or_404(Event, pk=pk)
-        event.offers.remove(request.user)
+        try:
+            event = unapply_from_event(request.user, pk)
+        except CoachServiceError as e:
+            return _error_response(e)
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class CoachCancelEventView(APIView):
+    """Cancel a coach's accepted assignment on an event."""
+
     permission_classes = [IsAuthenticated, IsCoach]
 
     def patch(self, request, pk, format=None):
-        event = get_object_or_404(Event, pk=pk)
-        event.coach = False
-        event.coach_user = None
-        event.save()
-        event.offers.remove(request.user)
-        notify_organiser_coach_cancelled(event.organiser_user, event)
+        try:
+            event = cancel_assigned_event(request.user, pk)
+        except CoachServiceError as e:
+            return _error_response(e)
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
 class CoachFeedView(APIView):
+    """List available events a coach can apply to."""
+
     permission_classes = [IsAuthenticated, IsCoach]
 
     def get(self, request, format=None):
-        now = timezone.now()
-        blocked_by = Organiser.objects.filter(
-            blocked=request.user,
-        ).values_list('user_id', flat=True)
-        events = Event.objects.filter(
-            date__gte=now, coach_user__isnull=True,
-        ).exclude(
-            organiser_user_id__in=blocked_by,
-        ).order_by('date')
+        events = get_feed_events(request.user)
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
 
 class CoachUpcomingJobsView(APIView):
+    """List events the coach is assigned to."""
+
     permission_classes = [IsAuthenticated, IsCoach]
 
     def get(self, request, format=None):
-        now = timezone.now()
-        events = Event.objects.filter(
-            coach_user=request.user, date__gte=now,
-        ).order_by('date')
+        events = get_upcoming_jobs(request.user)
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
 
-class VoteCoachView(APIView):
-    permission_classes = [IsAuthenticated, IsOrganiser]
-
-    def patch(self, request, event_pk, format=None):
-        event = get_object_or_404(Event, pk=event_pk)
-        if event.coach_user is None:
-            return Response(
-                {"error": True, "error_msg": "Event has no assigned coach"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        coach = event.coach_user.coach
-        if not event.voted:
-            event.voted = True
-            event.save()
-            coach.votes += 1
-            coach.experience += request.data["experience"]
-            coach.flexibility += request.data["flexibility"]
-            coach.reliability += request.data["reliability"]
-            coach.save()
-        serializer = CoachSerializer(coach, many=False)
-        return Response(serializer.data)
-
-
 class CoachModelView(APIView):
+    """Return a coach's rating profile."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request, coach_pk, format=None):
-        user = get_object_or_404(User, pk=coach_pk)
-        coach = user.coach
+        try:
+            coach = get_coach_rating(coach_pk)
+        except CoachServiceError as e:
+            return _error_response(e)
         serializer = CoachSerializer(coach, many=False)
         return Response(serializer.data)

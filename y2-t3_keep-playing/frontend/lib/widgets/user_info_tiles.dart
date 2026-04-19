@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../api/client.dart';
-import '../api/users.dart';
-import '../models/event.dart';
-import '../models/user.dart';
-import 'app_theme.dart';
-import 'loading_indicator.dart';
+import 'package:keep_playing_frontend/models/event.dart';
+import 'package:keep_playing_frontend/models/user.dart';
+import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
 enum UserInfoType { user, coach, organiser }
 
@@ -32,8 +29,12 @@ class UserInfoListTile extends StatelessWidget {
   });
 
   void _launchEmail() async {
-    final subject = Uri.encodeFull('${event.name}, on: ${DateFormat.MMMEd().format(event.date)}');
-    final url = 'mailto:${user.email}?subject=$subject';
+    if (user.email.isEmpty) return;
+    // Encode both the email and subject so a user-registered string like
+    // "a@b.com?cc=evil@example.com" can't smuggle extra mailto headers.
+    final encodedEmail = Uri.encodeComponent(user.email);
+    final subject = Uri.encodeComponent('${event.name}, on: ${DateFormat.MMMEd().format(event.date)}');
+    final url = 'mailto:$encodedEmail?subject=$subject';
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     }
@@ -86,44 +87,5 @@ class UserInfoDialog extends StatelessWidget {
         ListTile(leading: const Icon(Icons.location_on), title: const Text('Location', style: _titleStyle), subtitle: Text(user.location)),
       ],
     );
-  }
-}
-
-class UserInfoDialogByPk extends StatefulWidget {
-  final int userPk;
-  final UserInfoType type;
-  final ApiClient apiClient;
-
-  const UserInfoDialogByPk({
-    super.key,
-    required this.userPk,
-    required this.type,
-    required this.apiClient,
-  });
-
-  @override
-  State<UserInfoDialogByPk> createState() => _UserInfoDialogByPkState();
-}
-
-class _UserInfoDialogByPkState extends State<UserInfoDialogByPk> {
-  User? _user;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUser();
-  }
-
-  Future<void> _loadUser() async {
-    final user = await ApiUsers(client: widget.apiClient).getUser(widget.userPk);
-    if (mounted) setState(() => _user = user);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_user == null) {
-      return const SimpleDialog(children: [LoadingIndicator()]);
-    }
-    return UserInfoDialog(user: _user!, type: widget.type);
   }
 }

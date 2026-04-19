@@ -20,8 +20,9 @@ RUN flutter precache --web
 WORKDIR /app
 COPY --chown=flutter:flutter . .
 
+ARG API_BASE_URL=
 RUN flutter pub get
-RUN flutter build web --release
+RUN flutter build web --release --dart-define=API_BASE_URL=$API_BASE_URL
 
 # Phone frame: rename Flutter's index.html to app.html, create wrapper
 RUN mv build/web/index.html build/web/app.html

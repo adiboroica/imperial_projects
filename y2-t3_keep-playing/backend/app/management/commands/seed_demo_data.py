@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from app.models import User, Coach, Organiser, Event
 from rest_framework.authtoken.models import Token
@@ -9,6 +10,9 @@ class Command(BaseCommand):
     help = 'Seeds the database with demo data for display purposes'
 
     def handle(self, *args, **options):
+        if not settings.DEBUG:
+            self.stderr.write('Refusing to seed demo data when DEBUG is False.')
+            return
         if User.objects.filter(username='organiser_demo').exists():
             self.stdout.write('Demo data already exists, skipping.')
             return
@@ -65,7 +69,7 @@ class Command(BaseCommand):
             location='Imperial College Sports Centre',
             details='Weekly football training session for beginners',
             price=50,
-            coach=False,
+
             start_time=time(10, 0),
             end_time=time(12, 0),
             flexible_start_time=time(9, 30),
@@ -84,7 +88,7 @@ class Command(BaseCommand):
             location='Crystal Palace National Sports Centre',
             details='Referee needed for inter-university basketball tournament',
             price=75,
-            coach=False,
+
             start_time=time(14, 0),
             end_time=time(17, 0),
             flexible_start_time=time(13, 30),
@@ -104,7 +108,6 @@ class Command(BaseCommand):
             location='London Aquatics Centre',
             details='Swimming lessons for children aged 8-12',
             price=40,
-            coach=True,
             coach_user=coach_user,
             start_time=time(9, 0),
             end_time=time(10, 30),
@@ -124,7 +127,7 @@ class Command(BaseCommand):
             location='The Oval',
             details='Umpire needed for friendly cricket match',
             price=60,
-            coach=False,
+
             start_time=time(11, 0),
             end_time=time(16, 0),
             flexible_start_time=time(10, 30),

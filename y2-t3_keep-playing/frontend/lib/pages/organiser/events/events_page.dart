@@ -7,12 +7,12 @@ import 'package:keep_playing_frontend/widgets/app_theme.dart';
 import 'package:keep_playing_frontend/widgets/calendar_view.dart';
 import 'package:keep_playing_frontend/widgets/error_display.dart';
 import 'package:keep_playing_frontend/widgets/loading_indicator.dart';
-import 'package:keep_playing_frontend/widgets/organiser_event_cards.dart';
+import 'package:keep_playing_frontend/pages/organiser/widgets/organiser_event_cards.dart';
 
-import '../profile/organiser_cubit.dart';
-import 'events_cubit.dart';
-import 'events_for_day_page.dart';
-import 'new_event_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/profile/organiser_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_cubit.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/events_for_day_page.dart';
+import 'package:keep_playing_frontend/pages/organiser/events/new_event_page.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});

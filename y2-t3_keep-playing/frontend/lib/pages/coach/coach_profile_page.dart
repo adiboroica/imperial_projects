@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:keep_playing_frontend/pages/landing_page.dart';
 import 'package:keep_playing_frontend/state/auth_cubit.dart';
 import 'package:keep_playing_frontend/widgets/app_theme.dart';
 
@@ -31,6 +32,23 @@ class CoachProfilePage extends StatelessWidget {
           _ReadOnlyField(label: 'Last Name', value: user.lastName),
           const SizedBox(height: AppTheme.paddingMedium),
           _ReadOnlyField(label: 'Location', value: user.location),
+          const SizedBox(height: AppTheme.paddingLarge),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: AppTheme.cancelColor),
+            title: const Text('Logout'),
+            // Must await logout() so AuthCubit emits AuthUnauthenticated before
+            // we navigate to Landing. Otherwise Landing's session-restore check
+            // sees a stale AuthAuthenticated state and bounces us back to home.
+            onTap: () async {
+              await context.read<AuthCubit>().logout();
+              if (!context.mounted) return;
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LandingPage()),
+                (route) => false,
+              );
+            },
+          ),
         ],
       ),
     );
