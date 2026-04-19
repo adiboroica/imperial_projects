@@ -5,7 +5,7 @@
 // waits for a trigger file between shots so an outer process (or another
 // terminal) can advance it while the user manipulates the browser:
 //
-//   touch screenshots_taker/.snap-next
+//   touch utils/screenshots_taker/.snap-next
 //
 // The script deletes the trigger after each snap. Prereq: Flutter app up at
 // http://localhost/app.html (docker compose up -d). See README.md.
@@ -16,7 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.resolve(__dirname, '..', 'docs', 'screenshots');
+const OUT = path.resolve(__dirname, '..', '..', 'docs', 'screenshots');
 const APP_URL = 'http://localhost/app.html';
 const TRIGGER = path.resolve(__dirname, '.snap-next');
 

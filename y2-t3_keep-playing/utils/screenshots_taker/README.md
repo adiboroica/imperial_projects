@@ -1,6 +1,6 @@
 # screenshots_taker
 
-A tiny Node helper to (re)generate the PNGs in [`docs/screenshots/`](../docs/screenshots/) against
+A tiny Node helper to (re)generate the PNGs in [`docs/screenshots/`](../../docs/screenshots/) against
 the currently running app. Drives a visible Chromium window at 390×844 (Pixel-
 phone size, matching the existing shots) and saves each screenshot directly to
 disk via Puppeteer's `page.screenshot({ path })`.
@@ -23,7 +23,7 @@ screenshot is supposed to show.
 ## First-run setup
 
 ```bash
-cd screenshots_taker
+cd utils/screenshots_taker
 npm install
 ```
 
@@ -43,7 +43,7 @@ time, prompting between each. To advance, create the trigger file from
 **another terminal** (or via your editor):
 
 ```bash
-touch screenshots_taker/.snap-next
+touch utils/screenshots_taker/.snap-next
 ```
 
 The script deletes the trigger after each snap and moves on to the next cue.
@@ -58,7 +58,7 @@ The script deletes the trigger after each snap and moves on to the next cue.
 | 4 | `04-organiser-events.png`         | Toggled Calendar → List view |
 | 5 | `05-coach-feed.png`               | Logged out → "Enter as coach" → `coach_demo` / `demo1234` → Feed |
 
-PNGs are written to `../docs/screenshots/<filename>` (overwriting what's there).
+PNGs are written to `../../docs/screenshots/<filename>` (overwriting what's there).
 The browser closes cleanly after the fifth shot.
 
 ## Files
