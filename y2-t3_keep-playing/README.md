@@ -6,6 +6,8 @@ A sports coaching platform that connects event organisers with coaches and refer
 
 ## ✨ Features
 
+Grouped by audience: shared capabilities first, then what each role can do.
+
 ### General
 
 | Feature             | Description                                                 |
@@ -35,6 +37,8 @@ A sports coaching platform that connects event organisers with coaches and refer
 | Profile with qualifications | Showcase your experience and certifications         |
 
 ## 🚀 Getting Started
+
+Docker is the only hard requirement — everything else runs inside the compose stack.
 
 ### Prerequisites
 

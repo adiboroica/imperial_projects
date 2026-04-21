@@ -6,27 +6,24 @@ Screen-level widgets organized by user role.
 
 Pages are organized into `coach/` and `organiser/` sub-directories reflecting the two user roles. Shared pages (landing, login) live at the root. Features that need local state management co-locate their Cubit with the page.
 
-## 📱 User Flows
+See [the frontend README](../../README.md) for the user-flow summary by role.
 
-### Coach
+## 📂 Layout
 
-- Browse a feed of available events, filtered by sport and role
-- View event details and apply or withdraw
-- View upcoming confirmed jobs
-- View own profile with qualifications
-
-### Organiser
-
-- View all events on a calendar, drill into individual days
-- Create, edit, and delete events
-- Review coach applications and accept offers
-- Rate coaches after events (reliability, flexibility, experience)
-- Manage favourites and blocked coaches
-- Set default values for new events (sport, role, location, price)
+    pages/
+    ├── landing_page.dart          # role selector
+    ├── shared_login_page.dart     # generic login form used by both roles
+    ├── coach/                     # coach-role pages
+    │   ├── feed/                  # event browse + FeedCubit
+    │   └── upcoming_jobs/         # assigned jobs + UpcomingJobsCubit
+    └── organiser/                 # organiser-role pages
+        ├── events/                # calendar, day drill-in, create/edit + EventsCubit
+        ├── profile/               # defaults, favourites, blocked + OrganiserCubit
+        └── past_event/            # past-event detail + rate-coach
 
 ## 🏗️ Design
 
-- **Co-located cubits** — FeedCubit lives in `coach/feed/`, EventsCubit in `organiser/events/`, OrganiserCubit in `organiser/profile/`. These cubits are scoped to their feature and use `DataState<T>` from `state/data_state.dart`.
+- **Co-located cubits** — `FeedCubit` lives in `coach/feed/`, `EventsCubit` in `organiser/events/`, `OrganiserCubit` in `organiser/profile/`. These cubits are scoped to their feature and use `DataState<T>` from `state/data_state.dart`.
 - **BlocProvider scoping** — page-level cubits are provided via `BlocProvider` at the page level and destroyed when the page is popped. They do not outlive their screen.
 - **Shared login page** — `SharedLoginPage` is a generic login form widget. `CoachLoginPage` and `OrganiserLoginPage` wrap it with role-specific configuration.
 

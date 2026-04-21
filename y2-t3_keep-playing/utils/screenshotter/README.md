@@ -5,7 +5,7 @@ the currently running app. Drives a visible Chromium window at 390×844 (Pixel-
 phone size, matching the existing shots) and saves each screenshot directly to
 disk via Puppeteer's `page.screenshot({ path })`.
 
-## Why this exists
+## 📋 Why this exists
 
 Grabbing the screenshots by hand is fiddly: get the right viewport, dismiss the
 Flutter service-worker banner, snap at the right moment, save with the exact
@@ -14,13 +14,13 @@ banner, save path) and leaves the interactive parts (clicks, logins, view
 toggles) to you, pausing between shots so the browser state matches what each
 screenshot is supposed to show.
 
-## Prereqs
+## 🧰 Prereqs
 
 - Node 18+ (anything ESM-capable)
 - The full stack running: `docker compose up -d` from the repo root
 - The Flutter app reachable at `http://localhost/app.html`
 
-## First-run setup
+## 🚀 First-run setup
 
 ```bash
 cd utils/screenshotter
@@ -31,7 +31,7 @@ Downloads Puppeteer and, as a side effect, a matching Chromium build (~150 MB
 the first time, cached to `~/.cache/puppeteer` after). Subsequent runs skip
 this step.
 
-## Usage
+## ▶️ Usage
 
 ```bash
 node take_screenshots.mjs
@@ -61,7 +61,7 @@ The script deletes the trigger after each snap and moves on to the next cue.
 PNGs are written to `../../docs/screenshots/<filename>` (overwriting what's there).
 The browser closes cleanly after the fifth shot.
 
-## Files
+## 📂 Files
 
 - `take_screenshots.mjs` — the runner
 - `package.json` / `package-lock.json` — Puppeteer dep pin

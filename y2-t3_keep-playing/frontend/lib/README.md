@@ -17,6 +17,18 @@ The source is organized into six directories, each with a single responsibility.
 
 `api/` implements the repository interfaces but is never imported directly by `state/` or `pages/`. The wiring happens at the app root (`main.dart` / `app.dart`) via dependency injection.
 
+## 📐 Dependency Rules
+
+- `models/` never imports from any other module
+- `repositories/` imports from `models/` only — no `api/`, `state/`, `widgets/`, or `pages/`
+- `api/` imports from `models/` only and implements the `repositories/` interfaces — never imports from `state/`, `widgets/`, or `pages/`
+- `state/` imports from `repositories/` and `models/` only — never from `api/`, `widgets/`, or `pages/`
+- `widgets/` imports from `models/` only — never from `state/` or `pages/`
+- `pages/` imports from `state/`, `widgets/`, `repositories/`, and `models/` — never from `api/` directly
+- Dependencies flow upward only — no circular imports
+
+Enforced by `import_guard` (see [test/architecture/README.md](../test/architecture/README.md)).
+
 ## 📂 Directories
 
 | Directory      | Purpose                                                                |

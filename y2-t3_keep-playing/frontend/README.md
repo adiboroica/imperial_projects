@@ -27,7 +27,7 @@ docker compose run --rm --build frontend-test    # from project root
 flutter test
 ```
 
-Tests cover models, serialization, cubits (FeedCubit, UpcomingJobsCubit, EventsCubit, AuthCubit, OrganiserCubit), API client error handling, and filter logic.
+Tests cover models, serialization, cubits (`FeedCubit`, `UpcomingJobsCubit`, `EventsCubit`, `AuthCubit`, `OrganiserCubit`), API client error handling, and filter logic.
 
 ## 🔍 Dependency Audit
 
