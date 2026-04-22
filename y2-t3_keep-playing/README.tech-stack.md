@@ -1,6 +1,6 @@
-# Frameworks & Libraries
+# Tech Stack
 
-A short primer for anyone reading this repo who isn't already fluent with the main frameworks in the stack. Each entry is a quick overview of the framework; the final section traces how they line up end-to-end in Keep Playing.
+A short primer on every library, framework, and piece of infrastructure in the stack. Each entry is a quick overview of the technology; the final section traces how they line up end-to-end in Keep Playing.
 
 ## 🎨 Frontend
 

@@ -169,7 +169,7 @@ For production, set `DEBUG=False` and provide a real `SECRET_KEY`. The app will 
 | Frontend       | Flutter 3.41 (web), BLoC/Cubit state management  |
 | Infrastructure | Docker Compose, nginx reverse proxy, gunicorn    |
 
-> See [frameworks & libraries](README.frameworks.md) for a primer on each library and the role it plays in the app.
+> See [tech stack](README.tech-stack.md) for a primer on each library, framework, and piece of infrastructure, and the role it plays in the app.
 
 See [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md) for component-specific documentation.
 
