@@ -169,6 +169,8 @@ For production, set `DEBUG=False` and provide a real `SECRET_KEY`. The app will 
 | Frontend       | Flutter 3.41 (web), BLoC/Cubit state management  |
 | Infrastructure | Docker Compose, nginx reverse proxy, gunicorn    |
 
+> See [frameworks & libraries](README.frameworks.md) for a primer on each library and the role it plays in the app.
+
 See [backend/README.md](backend/README.md) and [frontend/README.md](frontend/README.md) for component-specific documentation.
 
 > **Docs drift note**: the module READMEs describe the code as of their last update. When the structure changes (files renamed, responsibilities shifted), run `git log -- <module>/` to see what's changed recently; the README may be behind.
