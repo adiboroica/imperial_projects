@@ -1,9 +1,13 @@
-export const HOME_PAGE = "/"
+/**
+ * URL route constants. Pages reference these so a path change is one edit.
+ */
 
-export const LOGIN_PAGE = "/login/"
-export const SIGNUP_PAGE = "/signup/"
-export const ACCOUNT_PAGE = "/account/"
+export const HOME_PAGE = "/";
 
-export const INITIAL_INPUT_PAGE = "/initial-input/"
-export const DASHBOARD_PAGE = "/dashboard/"
-export const GENERATOR_PAGE = "/generator/"
+export const LOGIN_PAGE = "/login";
+export const SIGNUP_PAGE = "/signup";
+export const ACCOUNT_PAGE = "/account";
+
+export const SETUP_PAGE = "/setup";
+export const DASHBOARD_PAGE = "/dashboard";
+export const GENERATOR_PAGE = "/generator/";

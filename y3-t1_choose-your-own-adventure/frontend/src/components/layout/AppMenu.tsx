@@ -1,37 +1,31 @@
-import { useCallback, useState } from 'react';
+/**
+ * Account dropdown menu — presentational. `App.tsx` wires `loggedIn` and the
+ * `onLogout` callback.
+ */
+
+import { Group, Menu, Text, UnstyledButton } from "@mantine/core";
 import {
-  UnstyledButton,
-  Menu,
-  Group,
-  Text,
-} from '@mantine/core';
-import {
+  IconChevronDown,
+  IconLogin,
   IconLogout,
   IconSettings,
-  IconChevronDown,
   IconUserCircle,
-  IconLogin,
-} from '@tabler/icons-react';
-import clsx from 'clsx';
-import { useNavigate } from 'react-router-dom';
-import { ACCOUNT_PAGE, LOGIN_PAGE } from '../../utils/routes';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { logout, selectLoggedIn } from '../../store/features/accountSlice';
-import classes from './AppMenu.module.css';
+} from "@tabler/icons-react";
+import clsx from "clsx";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import { ACCOUNT_PAGE, LOGIN_PAGE } from "../../utils/routes";
+import classes from "./AppMenu.module.css";
 
-export default function AppMenu() {
+type Props = {
+  loggedIn: boolean;
+  onLogout: () => void;
+};
+
+const AppMenu = ({ loggedIn, onLogout }: Props) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-
-  const loggedIn = useAppSelector(selectLoggedIn);
-
-  const onClickLogout = useCallback(() => {
-    dispatch(logout());
-  }, [dispatch]);
-
 
   return (
     <Menu
@@ -43,7 +37,9 @@ export default function AppMenu() {
     >
       <Menu.Target>
         <UnstyledButton
-          className={clsx(classes.user, { [classes.userActive]: userMenuOpened })}
+          className={clsx(classes.user, {
+            [classes.userActive]: userMenuOpened,
+          })}
         >
           <Group gap={7}>
             <IconUserCircle size={12} />
@@ -63,17 +59,24 @@ export default function AppMenu() {
         >
           Account settings
         </Menu.Item>
-        {
-          loggedIn ?
-            <Menu.Item leftSection={<IconLogout size={14} stroke={1.5} />} onClick={onClickLogout}>
-              Log Out
-            </Menu.Item>
-            :
-            <Menu.Item leftSection={<IconLogin size={14} stroke={1.5} />} onClick={() => navigate(LOGIN_PAGE)}>
-            Log In
-            </Menu.Item>
-        }
+        {loggedIn ? (
+          <Menu.Item
+            leftSection={<IconLogout size={14} stroke={1.5} />}
+            onClick={onLogout}
+          >
+            Log out
+          </Menu.Item>
+        ) : (
+          <Menu.Item
+            leftSection={<IconLogin size={14} stroke={1.5} />}
+            onClick={() => navigate(LOGIN_PAGE)}
+          >
+            Log in
+          </Menu.Item>
+        )}
       </Menu.Dropdown>
     </Menu>
   );
-}
+};
+
+export default AppMenu;

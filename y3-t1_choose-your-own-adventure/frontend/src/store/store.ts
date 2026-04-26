@@ -1,22 +1,18 @@
-import { configureStore } from '@reduxjs/toolkit'
-import accountReducer from './features/accountSlice'
-import initialInputReducer from './features/initialInputSlice'
-import storyReducer from './features/storySlice'
-import wsMiddleware from './wsMiddleware'
-import wsReducer from './wsSlice'
+/**
+ * Store composition. Calls `configureStore` over the combined `rootReducer`
+ * and registers cross-cutting middleware.
+ */
 
-const reducer = {
-  story: storyReducer,
-  account: accountReducer,
-  initialInput: initialInputReducer,
-  ws: wsReducer,
-}
+import { configureStore } from "@reduxjs/toolkit";
+
+import notificationMiddleware from "./middleware/notification";
+import wsMiddleware from "./middleware/ws";
+import { rootReducer } from "./rootReducer";
 
 export const store = configureStore({
-  reducer,
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(wsMiddleware);
-  },
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(wsMiddleware, notificationMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

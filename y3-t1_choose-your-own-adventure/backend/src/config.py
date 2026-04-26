@@ -6,4 +6,5 @@ def get_db_url():
 
 
 def get_app_url() -> str:
-    return os.getenv("APP_URL", "http://localhost:3000")
+    """Return the canonical SPA URL with any trailing slash stripped."""
+    return os.getenv("APP_URL", "http://localhost:3000").rstrip("/")

@@ -1,0 +1,42 @@
+# Development override — applies on top of `docker-compose.yml`.
+#
+# Run with:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#
+# This file:
+#   - Mounts `backend/mongo-init/` so the demo user and sample stories seed on
+#     first boot of the `mongodb` volume.
+#   - Targets the backend image's `dev` stage so `pytest`/`ruff`/`mypy` are
+#     available inside the running container.
+#   - Supplies dev defaults for `ENCRYPTION_KEY`, `OPENAI_API_KEY`, `APP_URL`,
+#     and toggles `DEV=true` so `_validate_required_env` does not fail-fast.
+#
+# Never apply this override in production.
+
+services:
+  mongodb:
+    volumes:
+      - ./backend/mongo-init:/docker-entrypoint-initdb.d
+
+  backend:
+    build:
+      target: dev
+    environment:
+      - DEV=true
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-dev-only-not-secure-change-me-now}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+
+  frontend:
+    build:
+      target: dev
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
+    # Bind-mount the source for HMR. `node_modules` stays inside the image
+    # (the host's `npm install` would either be missing or wrong arch).
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/tests:/app/tests
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+      - ./frontend/tsconfig.json:/app/tsconfig.json
+      - ./frontend/package.json:/app/package.json

@@ -1,0 +1,92 @@
+[importlinter]
+root_packages =
+    src
+include_external_packages = True
+
+[importlinter:contract:layers]
+name = Backend layered architecture
+type = layers
+layers =
+    routers
+    services
+    repositories | ai
+    models
+containers =
+    src
+
+[importlinter:contract:models-leaf]
+name = models is a leaf module
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    src.models
+forbidden_modules =
+    src.routers
+    src.services
+    src.repositories
+    src.ai
+    src.db
+    src.dependencies
+
+[importlinter:contract:ai-no-storage]
+name = ai never touches storage or HTTP
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    src.ai
+forbidden_modules =
+    src.routers
+    src.services
+    src.repositories
+    src.db
+    src.dependencies
+    motor
+    pymongo
+
+[importlinter:contract:repositories-only-mongo]
+name = repositories is the only Motor caller
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    src.repositories
+forbidden_modules =
+    src.routers
+    src.services
+    src.ai
+    src.dependencies
+
+[importlinter:contract:services-no-routers-no-motor]
+name = services do not import routers, db, or motor directly
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    src.services
+forbidden_modules =
+    src.routers
+    src.db
+    src.dependencies
+    motor
+    pymongo
+
+[importlinter:contract:routers-thin]
+name = routers stay thin
+type = forbidden
+allow_indirect_imports = True
+source_modules =
+    src.routers
+forbidden_modules =
+    src.repositories
+    src.ai
+    src.db
+    motor
+    pymongo
+
+[importlinter:contract:services-independent]
+name = services are independent of each other
+type = independence
+modules =
+    src.services.auth
+    src.services.story
+    src.services.api_key
+    src.services.generation
+    src.services.export

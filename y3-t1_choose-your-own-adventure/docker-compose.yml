@@ -3,31 +3,48 @@ services:
     image: mongo:6
     volumes:
       - mongodb_data:/data/db
-      - ./backend/mongo-init:/docker-entrypoint-initdb.d
-    ports:
-      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      target: prod
+    # Required env (validated at boot by `src.main._validate_required_env`,
+    # which fail-fasts when DEV is unset/false):
+    #   - OPENAI_API_KEY  : non-empty
+    #   - ENCRYPTION_KEY  : non-empty AND not the dev fallback
+    #   - APP_URL         : canonical SPA origin (default: localhost:3000)
     environment:
       - DB_URL=mongodb://mongodb:27017/cyoa
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4.1}
-      - COOKIE_SECRET=${COOKIE_SECRET:-change-me-to-a-random-secret}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-5.4}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-}
       - PORT=8000
-      - DEV=true
-      - APP_URL=http://localhost:3000
+      - APP_URL=${APP_URL:-http://localhost:3000}
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     expose:
       - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=2).status==200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
 
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   mongodb_data:

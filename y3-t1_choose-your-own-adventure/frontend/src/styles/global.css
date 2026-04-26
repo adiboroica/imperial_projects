@@ -24,9 +24,17 @@ code {
     monospace;
 }
 
-a,
-a:active,
-a:visited {
+/*
+ * Content-link colour — applies only to anchors that are NOT Mantine
+ * button-anchors. Without the `:not(...)` exclusion, this rule overrides
+ * the button label colour on the Welcome page's `Log in` button (which
+ * Mantine renders as an `<a>` because of `component={Link}`), turning the
+ * white label into a near-invisible light blue against the filled-button
+ * background.
+ */
+a:not([class*="Button-root"]):not([class*="UnstyledButton-root"]),
+a:not([class*="Button-root"]):not([class*="UnstyledButton-root"]):active,
+a:not([class*="Button-root"]):not([class*="UnstyledButton-root"]):visited {
   color: #46a3de;
 }
 
