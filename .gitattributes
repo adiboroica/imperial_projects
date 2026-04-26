@@ -1,0 +1,12 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Force LF for shell scripts (CRLF breaks them)
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Force LF for other scripts/configs that expect it
+*.yml text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf
+Dockerfile text eol=lf
