@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:arch": "depcruise --validate .dependency-cruiser.cjs src",
+    "test:arch": "depcruise --config tests/architecture/.dependency-cruiser.cjs src",
     "lint": "eslint src --max-warnings 0"
   },
   "dependencies": {

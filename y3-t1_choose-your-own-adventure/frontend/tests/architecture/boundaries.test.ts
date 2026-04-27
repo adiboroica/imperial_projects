@@ -15,12 +15,12 @@ const PROJECT_ROOT = resolve(__dirname, "..", "..");
 
 describe("architecture boundaries", () => {
   it("dependency-cruiser contracts pass", () => {
-    const configPath = resolve(PROJECT_ROOT, ".dependency-cruiser.cjs");
+    const configPath = resolve(__dirname, ".dependency-cruiser.cjs");
     if (!existsSync(configPath)) {
       throw new Error(`Missing config at ${configPath}`);
     }
     try {
-      execSync(`npx --yes depcruise --validate "${configPath}" src`, {
+      execSync(`npx --yes depcruise --config "${configPath}" src`, {
         cwd: PROJECT_ROOT,
         stdio: "pipe",
       });

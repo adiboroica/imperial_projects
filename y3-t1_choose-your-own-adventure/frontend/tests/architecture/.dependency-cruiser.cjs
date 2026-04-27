@@ -1,8 +1,8 @@
 /**
  * Architecture rules — enforces the layering documented in `src/README.md`.
  *
- * Run via `npx depcruise --validate .dependency-cruiser.cjs src` (also wired
- * up as `npm run test:arch`).
+ * Run via `npx depcruise --config tests/architecture/.dependency-cruiser.cjs src`
+ * (also wired up as `npm run test:arch`).
  */
 
 module.exports = {
